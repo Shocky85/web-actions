@@ -5,12 +5,14 @@
 
   <property name="compiler.args.xml-transform" value="${compiler.args}"/>
   
-  <property name="xml-transform.output.dir" value="${module.xml-transform.basedir}/classes"/>
-  <property name="xml-transform.testoutput.dir" value="${module.xml-transform.basedir}/classes"/>
-  <property name="xml-transform.jar.filename" value="xml-transform-${xml-transform.version}.jar"/>
+  <property name="xml-transform.name" value="xml-transform"/>
+  <property name="xml-transform.output.dir" value="${out.dir.production}/${xml-transform.name}"/>
+  <property name="xml-transform.testoutput.dir" value="${out.dir.tests}/${xml-transform.name}"/>
+  <property name="xml-transform.jar.filename" value="${xml-transform.name}.jar"/>
+  <property name="xml-transform.src.jar.filename" value="${xml-transform.name}-src.jar"/>
   <property name="xml-transform.jar.file" value="${module.xml-transform.basedir}/${xml-transform.jar.filename}"/>
-  <property name="saxon-functions.jar.filename" value="saxon-functions-${xml-transform.version}.jar"/>
-  <property name="saxon-caching-transformer-factory.jar.filename" value="saxon-caching-factory-${xml-transform.version}.jar"/>
+  <property name="saxon-functions.jar.filename" value="saxon-functions.jar"/>
+  <property name="saxon-caching-transformer-factory.jar.filename" value="saxon-caching-factory.jar"/>
 
   <path id="xml-transform.module.lib">
     <fileset refid="library.log4j"/>
@@ -22,24 +24,6 @@
     <fileset refid="library.jtidy"/>
     <fileset refid="library.commons-httpclient"/>
     <fileset refid="library.jstl"/>
-
-
-<!--
-    <fileset dir="${basedir}/lib">
-      <include name="avalon-framework.jar"/>
-      <include name="catalina.jar"/>
-      <include name="commons-httpclient.jar"/>
-      <include name="commons-logging.jar"/>
-      <include name="log4j-1.2.8.jar"/>
-      <include name="saxon8.jar"/>
-      <include name="securityfilter.jar"/>
-      <include name="servlet.jar"/>
-      <include name="servlet-api.jar"/>
-      <include name="standard.jar"/>
-      <include name="Tidy.jar"/>
-    </fileset>
--->
-    <!--<fileset refid="ognl.library.fileset"/>-->
   </path>
 
   <patternset id="excluded.from.module.xml-transform">
@@ -67,14 +51,11 @@
     Compile module
   -->
   <target name="compile.module.xml-transform"
-          depends="compile.module.xml-transform.production"
-          description="Compile xml-transform module"/>
+          description="Compile xml-transform module">
 
-  <mkdir dir="${xml-transform.output.dir}"/>
-
-  <target name="compile.module.xml-transform.production"
-          description="compile module(s) xml-transform production classes">
     <mkdir dir="${xml-transform.output.dir}"/>
+
+
     <javac destdir="${xml-transform.output.dir}"
            debug="${compiler.debug}"
            nowarn="${compiler.generate.no.warnings}"
@@ -101,11 +82,28 @@
     <jar basedir="${xml-transform.output.dir}"
          jarfile="${xml-transform.jar.file}">
       <metainf dir="${module.xml-transform.basedir}/META-INF"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="XML Transformation utilities"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
+      </manifest>
     </jar>
+
+    <jar jarfile="${module.xml-transform.basedir}/${xml-transform.src.jar.filename}">
+      <fileset dir="${module.xml-transform.basedir}/src"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="XML Transformation utilities"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
+      </manifest>
+    </jar>
+
     <!-- Jar Saxon Functions -->
     <jar basedir="${xml-transform.output.dir}"
          jarfile="${module.xml-transform.basedir}/${saxon-functions.jar.filename}">
       <include name="net/sf/saxon/functions/**/*.*"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="XML Transformation utilities"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
+      </manifest>
     </jar>
     <!-- Jar saxon caching transformer factory -->
     <jar basedir="${xml-transform.output.dir}"
@@ -114,6 +112,10 @@
         <include name="**/javax.xml.transform.TransformerFactory"/>
       </metainf>
       <include name="org/wm/xml/transform/CachingTransformerFactory.class"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="XML Transformation utilities"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
+      </manifest>
     </jar>
 
   </target>
@@ -125,6 +127,7 @@
     <delete dir="${xml-transform.output.dir}" failonerror="no"/>
     <delete dir="${xml-transform.testoutput.dir}" failonerror="no"/>
     <delete file="${module.xml-transform.basedir}/${xml-transform.jar.filename}" failonerror="no"/>
+    <delete file="${module.xml-transform.basedir}/${xml-transform.src.jar.filename}" failonerror="no"/>
     <delete file="${module.xml-transform.basedir}/${saxon-functions.jar.filename}" failonerror="no"/>
     <delete file="${module.xml-transform.basedir}/${saxon-caching-transformer-factory.jar.filename}" failonerror="no"/>
   </target>

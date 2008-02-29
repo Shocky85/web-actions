@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_action-processor" default="package.module.action-processor">
 
-  <property file="build.properties"/>
   <dirname property="module.action-processor.basedir" file="${ant.file.module_action-processor}"/>
+
   <property name="module.action-processor.name" value="action-processor"/>
   <property name="module.action-processor.jar.filename" value="${module.action-processor.name}.jar"/>
   <property name="module.action-processor.jar.file" value="${module.action-processor.basedir}/${module.action-processor.jar.filename}"/>
-  <property name="module.action-processor.src.jar.file" value="${module.action-processor.basedir}/${module.action-processor.name}-src.jar"/>
-  <property name="action-processor.output.dir" value="${module.action-processor.basedir}/classes/production/action-processor"/>
-  <property name="action-processor.testoutput.dir" value="${module.action-processor.basedir}/classes/test/action-processor"/>
+  <property name="module.action-processor.src.jar.filename" value="${module.action-processor.name}-src.jar"/>
+  <property name="module.action-processor.src.jar.file" value="${module.action-processor.basedir}/${module.action-processor.src.jar.filename}"/>
+  <property name="action-processor.output.dir" value="${out.dir.production}/${module.action-processor.name}"/>
+  <property name="action-processor.testoutput.dir" value="${out.dir.tests}/${module.action-processor.name}"/>
 
   <!-- Project Libraries -->
     
   <path id="action-processor.module.classpath">
     <fileset refid="module.xml-transform"/>
     <fileset refid="module.action-evaluator"/>
-    <fileset refid="library.jsr223-java-script-engine"/>
+    <fileset refid="module.xml-transform"/>
     <fileset refid="library.log4j"/>
     <fileset refid="library.saxon"/>
     <fileset refid="library.spring-core"/>
@@ -62,7 +63,7 @@
       </fileset>
       <manifest>
         <attribute name="Implementation-Title" value="Action Processor"/>
-        <attribute name="Implementation-Version" value="${action-processor.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
 
@@ -70,7 +71,7 @@
       <fileset dir="${module.action-processor.basedir}/src"/>
       <manifest>
         <attribute name="Implementation-Title" value="Action Processor Source"/>
-        <attribute name="Implementation-Version" value="${action-processor.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
 
@@ -129,6 +130,7 @@
     <delete dir="${action-processor.output.dir}"/>
     <delete dir="${action-processor.testoutput.dir}"/>
     <delete file="${module.action-processor.jar.file}"/>
+    <delete file="${module.action-processor.src.jar.file}"/>
   </target>
   
 </project>
