@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="moduke_action-evaluator" default="package.module.action-evaluator">
+<project name="module_action-evaluator" default="package.module.action-evaluator">
 
-  <property file="build.properties"/>
-  <dirname property="module.action-evaluator.basedir" file="${ant.file.moduke_action-evaluator}"/>
+  <dirname property="module.action-evaluator.basedir" file="${ant.file.module_action-evaluator}"/>
+
   <property name="module.action-evaluator.name" value="action-evaluator"/>
   <property name="module.action-evaluator.jar.filename" value="${module.action-evaluator.name}.jar"/>
   <property name="module.action-evaluator.jar.file" value="${module.action-evaluator.basedir}/${module.action-evaluator.jar.filename}"/>
-  <property name="module.action-evaluator.src.jar.file" value="${module.action-evaluator.basedir}/${module.action-evaluator.name}-src.jar"/>
-  <property name="action-evaluator.output.dir" value="${module.action-evaluator.basedir}/classes/production/action-evaluator"/>
-  <property name="action-evaluator.testoutput.dir" value="${module.action-evaluator.basedir}/classes/test/action-evaluator"/>
+  <property name="module.action-evaluator.src.jar.filename" value="${module.action-evaluator.name}-src.jar"/>
+  <property name="module.action-evaluator.src.jar.file" value="${module.action-evaluator.basedir}/${module.action-evaluator.src.jar.filename}"/>
+  <property name="action-evaluator.output.dir" value="${out.dir.production}/${module.action-evaluator.name}"/>
+  <property name="action-evaluator.testoutput.dir" value="${out.dir.tests}/${module.action-evaluator.name}"/>
     
   <path id="action-evaluator.module.classpath">
     <fileset refid="library.junit"/>
@@ -17,7 +18,7 @@
     <fileset refid="library.commons-digester"/>
     <fileset refid="library.commons-logging"/>
     <fileset refid="library.java-engine"/>
-    <fileset refid="library.saxon-8.9"/>
+    <fileset refid="library.saxon"/>
     <fileset refid="library.xml-apis"/>
   </path>  
   
@@ -51,14 +52,14 @@
       <fileset dir="${action-evaluator.output.dir}"/>
       <manifest>
         <attribute name="Implementation-Title" value="Action Evaluator"/>
-        <attribute name="Implementation-Version" value="${action-evaluator.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
     <jar jarfile="${module.action-evaluator.src.jar.file}">
       <fileset dir="${module.action-evaluator.basedir}/src"/>
       <manifest>
         <attribute name="Implementation-Title" value="Action Evaluator Source"/>
-        <attribute name="Implementation-Version" value="${action-evaluator.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
   </target>
@@ -87,6 +88,7 @@
         <type type="file"/>
       </fileset>
     </copy>
+    
   </target>
 
   <!--
@@ -117,9 +119,10 @@
     Clean generated and compiled classes
   -->
   <target name="clean.module.action-evaluator" description="cleanup module">
-    <delete dir="${action-evaluator.output.dir}"/>
-    <delete dir="${action-evaluator.testoutput.dir}"/>
-    <delete file="${module.action-evaluator.jar.file}"/>
+    <delete dir="${action-evaluator.output.dir}" failonerror="false"/>
+    <delete dir="${action-evaluator.testoutput.dir}" failonerror="false"/>
+    <delete file="${module.action-evaluator.jar.file}" failonerror="false"/>
+    <delete file="${module.action-evaluator.src.jar.file}" failonerror="false"/>
   </target>
 
 </project>

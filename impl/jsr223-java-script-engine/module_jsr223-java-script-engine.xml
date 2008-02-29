@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="module_jsr223-java-script-engine" default="package.module.jsr223-java-script-engine">
 
-  <property file="build.properties"/>
-
   <dirname property="module.jsr223-java-script-engine.basedir" file="${ant.file.module_jsr223-java-script-engine}"/>
+  
   <property name="module.jsr223-java-script-engine.name" value="jsr223-java-script-engine"/>
   <property name="module.jsr223-java-script-engine.jar.filename" value="${module.jsr223-java-script-engine.name}.jar"/>
   <property name="module.jsr223-java-script-engine.src.jar.filename" value="${module.jsr223-java-script-engine.name}-src.jar"/>
 
   <property name="compiler.args.jsr223-java-script-engine" value="${compiler.args}"/>
   
-  <property name="jsr223-java-script-engine.output.dir" value="${module.jsr223-java-script-engine.basedir}/classes/production/jsr223-java-script-engine"/>
-  <property name="jsr223-java-script-engine.testoutput.dir" value="${module.jsr223-java-script-engine.basedir}/classes/test/jsr223-java-script-engine"/>
+  <property name="jsr223-java-script-engine.output.dir" value="${out.dir.production}/${module.jsr223-java-script-engine.name}"/>
+  <property name="jsr223-java-script-engine.testoutput.dir" value="${out.dir.tests}/${module.jsr223-java-script-engine.name}"/>
   
   <path id="jsr223-java-script-engine.module.classpath">
     <pathelement location="${module.jsr223-java-script-engine.basedir}/lib/junit-3.8.1.jar"/>
@@ -100,7 +99,7 @@
       <fileset dir="${jsr223-java-script-engine.output.dir}"/>
       <manifest>
         <attribute name="Implementation-Title" value="Java Scripting Engine"/>
-        <attribute name="Implementation-Version" value="${jsr223-java-script-engine.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
 
@@ -108,7 +107,7 @@
       <fileset dir="${module.jsr223-java-script-engine.basedir}/src"/>
       <manifest>
         <attribute name="Implementation-Title" value="Java Scripting Engine Source Code"/>
-        <attribute name="Implementation-Version" value="${jsr223-java-script-engine.version}"/>
+        <attribute name="Implementation-Version" value="${impl.version}"/>
       </manifest>
     </jar>
 
@@ -120,7 +119,8 @@
   <target name="clean.module.jsr223-java-script-engine" description="cleanup module">
     <delete dir="${jsr223-java-script-engine.output.dir}"/>
     <delete dir="${jsr223-java-script-engine.testoutput.dir}"/>
-    <delete file="${module.jsr223-java-script-engine.jar.filename}"/>
+    <delete file="${module.jsr223-java-script-engine.basedir}/${module.jsr223-java-script-engine.jar.filename}"/>
+    <delete file="${module.jsr223-java-script-engine.basedir}/${module.jsr223-java-script-engine.src.jar.filename}"/>
   </target>
 
 </project>

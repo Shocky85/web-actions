@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="web-actions" default="all">
-  
-  
+
   <property file="build.properties"/>
-  <!-- Uncomment the following property if no tests compilation is needed -->
-  <!-- 
-  <property name="skip.tests" value="true"/>
-   -->
-  
+  <property name="dist.dir" value="${basedir}/${dist.dir.name}"/>
+
+  <property name="out.dir.production" value="${basedir}/out/production"/>
+  <property name="out.dir.tests" value="${basedir}/out/tests"/>
+
   <!-- Compiler options -->
-  
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -82,10 +80,6 @@
     <include name="log4j-1.2.8.jar"/>
   </fileset>
 
-  <fileset id="library.saxon" dir="${basedir}/lib">
-    <include name="saxon8.jar"/>
-  </fileset>
-
   <fileset id="library.spring-core" dir="${basedir}/lib">
     <include name="spring.jar"/>
   </fileset>
@@ -150,11 +144,49 @@
 
   <import file="${basedir}/action-processor/module_action-processor.xml"/>
 
+  <!--
+    Create project distributive
+  -->
+  <target name="dist"
+          depends="clean, package.module.xml-transform, package.module.jsr223-java-script-engine,
+          package.module.action-evaluator, package.module.action-processor"
+          description="Build the project">
 
-  <target name="clean" depends="clean.module.jsr223-java-script-engine, clean.module.action-evaluator, clean.module.action-processor" description="cleanup all"/>
-  
-  <target name="all" 
-          depends="package.module.xml-transform, package.module.jsr223-java-script-engine, package.module.action-evaluator, package.module.action-processor"
-          description="build all"/>
-  
+    <!-- create dist dir -->
+    <mkdir dir="${dist.dir}"/>
+    <!-- copy files -->
+    <copy todir="${dist.dir}">
+      <!-- xml.transform module -->
+      <fileset dir="${module.xml-transform.basedir}">
+        <include name="${xml-transform.jar.filename}"/>
+        <include name="${xml-transform.src.jar.filename}"/>
+        <include name="${saxon-functions.jar.filename}"/>
+      </fileset>
+      <!-- jsr332 java script engine -->
+      <fileset dir="${module.jsr223-java-script-engine.basedir}">
+        <include name="${module.jsr223-java-script-engine.jar.filename}"/>
+        <include name="${module.jsr223-java-script-engine.src.jar.filename}"/>
+      </fileset>
+      <!-- action evaluator -->
+      <fileset dir="${module.action-evaluator.basedir}">
+        <include name="${module.action-evaluator.jar.filename}"/>
+        <include name="${module.action-evaluator.src.jar.filename}"/>
+      </fileset>
+      <!-- action processor -->
+      <fileset dir="${module.action-processor.basedir}">
+        <include name="${module.action-processor.jar.filename}"/>
+        <include name="${module.action-processor.src.jar.filename}"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean"
+          depends="clean.module.xml-transform, clean.module.jsr223-java-script-engine,
+          clean.module.action-evaluator, clean.module.action-processor"
+          description="Clean project files">
+    <delete dir="${dist.dir}" failonerror="false"/>
+    <delete dir="${out.dir.production}" failonerror="false"/>
+    <delete dir="${out.dir.tests}" failonerror="false"/>
+  </target>
+
 </project>
