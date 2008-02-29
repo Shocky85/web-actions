@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="web-actions" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+    <exclude name="**/.sbas/**"/>
+    <exclude name="**/.IJI.*/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+
+  <!-- Project Libraries -->
+  <fileset id="library.junit" dir="${basedir}/lib">
+    <include name="junit-3.8.1.jar"/>
+  </fileset>
+
+  <fileset id="library.commons-beanutils-core" dir="${basedir}/lib">
+    <include name="commons-beanutils-core-1.7.0.jar"/>
+  </fileset>
+
+  <fileset id="library.commons-betwixt" dir="${basedir}/lib">
+    <include name="commons-betwixt-0.8.jar"/>
+  </fileset>
+
+  <fileset id="library.commons-digester" dir="${basedir}/lib">
+    <include name="commons-digester-1.7.jar"/>
+  </fileset>
+
+  <fileset id="library.commons-logging" dir="${basedir}/lib">
+    <include name="commons-logging-1.0.4.jar"/>
+  </fileset>
+
+  <fileset id="library.saxon" dir="${basedir}/lib">
+    <include name="saxon-8.9.jar"/>
+  </fileset>
+
+  <fileset id="library.xml-apis" dir="${basedir}/lib">
+    <include name="xml-apis-1.0.b2.jar"/>
+  </fileset>
+
+  <fileset id="library.java-engine" dir="${basedir}/lib">
+    <include name="java-engine.jar"/>
+  </fileset>
+
+  <fileset id="library.action-evaluator" dir="${basedir}/lib">
+    <include name="action-evaluator.jar"/>
+  </fileset>
+
+  <fileset id="library.log4j" dir="${basedir}/lib">
+    <include name="log4j-1.2.8.jar"/>
+  </fileset>
+
+  <fileset id="library.saxon" dir="${basedir}/lib">
+    <include name="saxon8.jar"/>
+  </fileset>
+
+  <fileset id="library.spring-core" dir="${basedir}/lib">
+    <include name="spring.jar"/>
+  </fileset>
+
+  <fileset id="library.spring-test" dir="${basedir}/lib">
+    <include name="spring-test.jar"/>
+  </fileset>
+
+  <fileset id="library.spring-webmvc" dir="${basedir}/lib">
+    <include name="spring-webmvc.jar"/>
+  </fileset>
+
+  <fileset id="library.spring-webmvc-portlet" dir="${basedir}/lib">
+    <include name="spring-webmvc-portlet.jar"/>
+  </fileset>
+
+  <fileset id="library.servlet-api" dir="${basedir}/lib">
+    <include name="servlet-api.jar"/>
+    <include name="servlet.jar"/>
+  </fileset>
+
+  <fileset id="library.portlet-api" dir="${basedir}/lib">
+    <include name="portlet-api-lib.jar"/>
+  </fileset>
+
+  <fileset id="library.jtidy" dir="${basedir}/lib">
+    <include name="Tidy.jar"/>
+  </fileset>
+
+  <fileset id="library.commons-httpclient" dir="${basedir}/lib">
+    <include name="commons-httpclient.jar"/>
+  </fileset>
+
+  <fileset id="library.jstl" dir="${basedir}/lib">
+    <include name="jstl.1.1.2.jar"/>
+    <include name="standard.1.1.2.jar"/>
+  </fileset>
+
+
+  <!-- Modules -->
+  
+  <import file="${basedir}/xml-transform/module_xml-transform.xml"/>
+
+  <!-- Module filesets -->
+  <fileset id="module.xml-transform" dir="${module.xml-transform.basedir}">
+    <include name="${xml-transform.jar.filename}"/>
+  </fileset>
+
+  <import file="${basedir}/jsr223-java-script-engine/module_jsr223-java-script-engine.xml"/>
+
+  <!-- Module filesets -->
+  <fileset id="module.jsr223-java-script-engine" dir="${module.jsr223-java-script-engine.basedir}">
+    <include name="${module.jsr223-java-script-engine.jar.filename}"/>
+  </fileset>
+
+  <import file="${basedir}/action-evaluator/module_action-evaluator.xml"/>
+  
+  <!-- Module filesets -->
+  <fileset id="module.action-evaluator" dir="${module.action-evaluator.basedir}">
+    <include name="${module.action-evaluator.jar.filename}"/>
+  </fileset>
+
+  <import file="${basedir}/action-processor/module_action-processor.xml"/>
+
+
+  <target name="clean" depends="clean.module.jsr223-java-script-engine, clean.module.action-evaluator, clean.module.action-processor" description="cleanup all"/>
+  
+  <target name="all" 
+          depends="package.module.xml-transform, package.module.jsr223-java-script-engine, package.module.action-evaluator, package.module.action-processor"
+          description="build all"/>
+  
+</project>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<info primitiveTypes="attribute">
+    <element name='actions'>
+        <element name='action' property='actions'/>
+        <addDefaults/>
+    </element>
+</info>

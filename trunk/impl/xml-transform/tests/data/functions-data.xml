@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functions>
+  <deg2rad>
+    <deg>45</deg>
+  </deg2rad>
+  <rad2deg>
+    <rad>0.7853981633974483</rad>
+  </rad2deg>
+  <resource>
+    <bundle>test</bundle>
+    <locale>en</locale>
+    <key>hello</key>
+  </resource>
+  <resource>
+    <bundle>test</bundle>
+    <locale>fr</locale>
+    <key>hello</key>
+  </resource>
+  <resource-with-param>
+    <bundle>test</bundle>
+    <locale>en</locale>
+    <key>custom-hello</key>
+    <param1>World</param1>
+    <param2> !</param2>
+  </resource-with-param>
+  <resource-with-param>
+    <bundle>test</bundle>
+    <locale>fr</locale>
+    <key>custom-hello</key>
+    <param1>French World</param1>
+    <param2> !</param2>
+  </resource-with-param>
+</functions>

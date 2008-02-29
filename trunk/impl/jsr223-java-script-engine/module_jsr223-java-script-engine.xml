@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_jsr223-java-script-engine" default="package.module.jsr223-java-script-engine">
+
+  <property file="build.properties"/>
+
+  <dirname property="module.jsr223-java-script-engine.basedir" file="${ant.file.module_jsr223-java-script-engine}"/>
+  <property name="module.jsr223-java-script-engine.name" value="jsr223-java-script-engine"/>
+  <property name="module.jsr223-java-script-engine.jar.filename" value="${module.jsr223-java-script-engine.name}.jar"/>
+  <property name="module.jsr223-java-script-engine.src.jar.filename" value="${module.jsr223-java-script-engine.name}-src.jar"/>
+
+  <property name="compiler.args.jsr223-java-script-engine" value="${compiler.args}"/>
+  
+  <property name="jsr223-java-script-engine.output.dir" value="${module.jsr223-java-script-engine.basedir}/classes/production/jsr223-java-script-engine"/>
+  <property name="jsr223-java-script-engine.testoutput.dir" value="${module.jsr223-java-script-engine.basedir}/classes/test/jsr223-java-script-engine"/>
+  
+  <path id="jsr223-java-script-engine.module.classpath">
+    <pathelement location="${module.jsr223-java-script-engine.basedir}/lib/junit-3.8.1.jar"/>
+  </path>
+  
+  <patternset id="excluded.from.module.jsr223-java-script-engine">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jsr223-java-script-engine">
+    <patternset refid="excluded.from.module.jsr223-java-script-engine"/>
+  </patternset>
+  
+  <path id="jsr223-java-script-engine.module.sourcepath">
+    <dirset dir="${module.jsr223-java-script-engine.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="jsr223-java-script-engine.module.test.sourcepath">
+    <dirset dir="${module.jsr223-java-script-engine.basedir}">
+      <include name="tests/src"/>
+    </dirset>
+  </path>
+
+  <!--
+    Compile module
+  -->
+  <target name="compile.module.jsr223-java-script-engine"
+          description="Compile module jsr223-java-script-engine">
+
+    <mkdir dir="${jsr223-java-script-engine.output.dir}"/>
+
+    <javac destdir="${jsr223-java-script-engine.output.dir}"
+           debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+           memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.jsr223-java-script-engine}"/>
+      <classpath refid="jsr223-java-script-engine.module.classpath"/>
+      <src refid="jsr223-java-script-engine.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jsr223-java-script-engine"/>
+    </javac>
+    
+    <copy todir="${jsr223-java-script-engine.output.dir}">
+      <fileset dir="${module.jsr223-java-script-engine.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Compile test classes
+  -->
+  <target name="compile.module.jsr223-java-script-engine.tests"
+          depends="compile.module.jsr223-java-script-engine"
+          description="compile module jsr223-java-script-engine; test classes" unless="skip.tests">
+
+    <mkdir dir="${jsr223-java-script-engine.testoutput.dir}"/>
+
+    <javac destdir="${jsr223-java-script-engine.testoutput.dir}"
+           debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+           memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.jsr223-java-script-engine}"/>
+      <classpath refid="jsr223-java-script-engine.module.classpath"/>
+      <classpath location="${jsr223-java-script-engine.output.dir}"/>
+      <src refid="jsr223-java-script-engine.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jsr223-java-script-engine"/>
+    </javac>
+    
+    <copy todir="${jsr223-java-script-engine.testoutput.dir}">
+      <fileset dir="${module.jsr223-java-script-engine.basedir}/tests/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Package module files
+  -->
+  <target name="package.module.jsr223-java-script-engine"
+          depends="compile.module.jsr223-java-script-engine"
+          description="Package module">
+
+    <jar jarfile="${module.jsr223-java-script-engine.basedir}/${module.jsr223-java-script-engine.jar.filename}">
+      <fileset dir="${jsr223-java-script-engine.output.dir}"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="Java Scripting Engine"/>
+        <attribute name="Implementation-Version" value="${jsr223-java-script-engine.version}"/>
+      </manifest>
+    </jar>
+
+    <jar jarfile="${module.jsr223-java-script-engine.basedir}/${module.jsr223-java-script-engine.src.jar.filename}">
+      <fileset dir="${module.jsr223-java-script-engine.basedir}/src"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="Java Scripting Engine Source Code"/>
+        <attribute name="Implementation-Version" value="${jsr223-java-script-engine.version}"/>
+      </manifest>
+    </jar>
+
+  </target>
+
+  <!--
+    Clean module files
+  -->
+  <target name="clean.module.jsr223-java-script-engine" description="cleanup module">
+    <delete dir="${jsr223-java-script-engine.output.dir}"/>
+    <delete dir="${jsr223-java-script-engine.testoutput.dir}"/>
+    <delete file="${module.jsr223-java-script-engine.jar.filename}"/>
+  </target>
+
+</project>
