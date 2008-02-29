@@ -1,0 +1,14 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
+  <jsp:directive.page contentType="text/html;charset=ISO-8859-1"/>
+  <html>
+    <head><title>Simple jspx page</title></head>
+    <body>
+      <form method="post" action="hello.html">
+        <p>
+          Say Hello to <input type="text" name="sayHello~.name"/><br/>
+          <input type="submit" value="Say It"/>
+        </p>
+      </form>
+    </body>
+  </html>
+</jsp:root>

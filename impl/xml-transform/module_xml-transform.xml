@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="xml-transform" default="dist.module.xml-transform">
+
+  <dirname property="module.xml-transform.basedir" file="${ant.file.xml-transform}"/>
+
+  <property name="compiler.args.xml-transform" value="${compiler.args}"/>
+  
+  <property name="xml-transform.output.dir" value="${module.xml-transform.basedir}/classes"/>
+  <property name="xml-transform.testoutput.dir" value="${module.xml-transform.basedir}/classes"/>
+  <property name="xml-transform.jar.filename" value="xml-transform-${xml-transform.version}.jar"/>
+  <property name="xml-transform.jar.file" value="${module.xml-transform.basedir}/${xml-transform.jar.filename}"/>
+  <property name="saxon-functions.jar.filename" value="saxon-functions-${xml-transform.version}.jar"/>
+  <property name="saxon-caching-transformer-factory.jar.filename" value="saxon-caching-factory-${xml-transform.version}.jar"/>
+
+  <path id="xml-transform.module.lib">
+    <fileset refid="library.log4j"/>
+    <fileset refid="library.saxon"/>
+    <fileset refid="library.commons-logging"/>
+    <fileset refid="library.servlet-api"/>
+    <fileset refid="library.portlet-api"/>
+    <fileset refid="library.junit"/>
+    <fileset refid="library.jtidy"/>
+    <fileset refid="library.commons-httpclient"/>
+    <fileset refid="library.jstl"/>
+
+
+<!--
+    <fileset dir="${basedir}/lib">
+      <include name="avalon-framework.jar"/>
+      <include name="catalina.jar"/>
+      <include name="commons-httpclient.jar"/>
+      <include name="commons-logging.jar"/>
+      <include name="log4j-1.2.8.jar"/>
+      <include name="saxon8.jar"/>
+      <include name="securityfilter.jar"/>
+      <include name="servlet.jar"/>
+      <include name="servlet-api.jar"/>
+      <include name="standard.jar"/>
+      <include name="Tidy.jar"/>
+    </fileset>
+-->
+    <!--<fileset refid="ognl.library.fileset"/>-->
+  </path>
+
+  <patternset id="excluded.from.module.xml-transform">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.xml-transform">
+    <patternset refid="excluded.from.module.xml-transform"/>
+  </patternset>
+  
+  <path id="xml-transform.module.sourcepath">
+    <dirset dir="${module.xml-transform.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+
+  <!--
+    Create xml-transform module distributive
+  -->
+  <target name="dist.module.xml-transform"
+          depends="clean.module.xml-transform, package.module.xml-transform"
+    description="Build distributive for module xml-transform"/>
+
+  <!--
+    Compile module
+  -->
+  <target name="compile.module.xml-transform"
+          depends="compile.module.xml-transform.production"
+          description="Compile xml-transform module"/>
+
+  <mkdir dir="${xml-transform.output.dir}"/>
+
+  <target name="compile.module.xml-transform.production"
+          description="compile module(s) xml-transform production classes">
+    <mkdir dir="${xml-transform.output.dir}"/>
+    <javac destdir="${xml-transform.output.dir}"
+           debug="${compiler.debug}"
+           nowarn="${compiler.generate.no.warnings}"
+           memoryMaximumSize="${compiler.max.memory}"
+           fork="true">
+      <classpath refid="xml-transform.module.lib"/>
+      <src refid="xml-transform.module.sourcepath"/>
+    </javac>
+    <copy todir="${xml-transform.output.dir}">
+      <fileset dir="${module.xml-transform.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Jar module
+  -->
+  <target name="package.module.xml-transform"
+          depends="compile.module.xml-transform"
+          description="Package module files">
+    <!-- Entire module -->
+    <jar basedir="${xml-transform.output.dir}"
+         jarfile="${xml-transform.jar.file}">
+      <metainf dir="${module.xml-transform.basedir}/META-INF"/>
+    </jar>
+    <!-- Jar Saxon Functions -->
+    <jar basedir="${xml-transform.output.dir}"
+         jarfile="${module.xml-transform.basedir}/${saxon-functions.jar.filename}">
+      <include name="net/sf/saxon/functions/**/*.*"/>
+    </jar>
+    <!-- Jar saxon caching transformer factory -->
+    <jar basedir="${xml-transform.output.dir}"
+         jarfile="${module.xml-transform.basedir}/${saxon-caching-transformer-factory.jar.filename}">
+      <metainf dir="${module.xml-transform.basedir}/META-INF">
+        <include name="**/javax.xml.transform.TransformerFactory"/>
+      </metainf>
+      <include name="org/wm/xml/transform/CachingTransformerFactory.class"/>
+    </jar>
+
+  </target>
+
+  <!--
+    Clean up
+  -->
+  <target name="clean.module.xml-transform" description="cleanup module">
+    <delete dir="${xml-transform.output.dir}" failonerror="no"/>
+    <delete dir="${xml-transform.testoutput.dir}" failonerror="no"/>
+    <delete file="${module.xml-transform.basedir}/${xml-transform.jar.filename}" failonerror="no"/>
+    <delete file="${module.xml-transform.basedir}/${saxon-functions.jar.filename}" failonerror="no"/>
+    <delete file="${module.xml-transform.basedir}/${saxon-caching-transformer-factory.jar.filename}" failonerror="no"/>
+  </target>
+  
+</project>

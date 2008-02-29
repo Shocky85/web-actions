@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="moduke_action-evaluator" default="package.module.action-evaluator">
+
+  <property file="build.properties"/>
+  <dirname property="module.action-evaluator.basedir" file="${ant.file.moduke_action-evaluator}"/>
+  <property name="module.action-evaluator.name" value="action-evaluator"/>
+  <property name="module.action-evaluator.jar.filename" value="${module.action-evaluator.name}.jar"/>
+  <property name="module.action-evaluator.jar.file" value="${module.action-evaluator.basedir}/${module.action-evaluator.jar.filename}"/>
+  <property name="module.action-evaluator.src.jar.file" value="${module.action-evaluator.basedir}/${module.action-evaluator.name}-src.jar"/>
+  <property name="action-evaluator.output.dir" value="${module.action-evaluator.basedir}/classes/production/action-evaluator"/>
+  <property name="action-evaluator.testoutput.dir" value="${module.action-evaluator.basedir}/classes/test/action-evaluator"/>
+    
+  <path id="action-evaluator.module.classpath">
+    <fileset refid="library.junit"/>
+    <fileset refid="library.commons-beanutils-core"/>
+    <fileset refid="library.commons-betwixt"/>
+    <fileset refid="library.commons-digester"/>
+    <fileset refid="library.commons-logging"/>
+    <fileset refid="library.java-engine"/>
+    <fileset refid="library.saxon-8.9"/>
+    <fileset refid="library.xml-apis"/>
+  </path>  
+  
+  <patternset id="excluded.from.module.action-evaluator">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.action-evaluator">
+    <patternset refid="excluded.from.module.action-evaluator"/>
+  </patternset>
+  
+  <path id="action-evaluator.module.sourcepath">
+    <dirset dir="${module.action-evaluator.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="action-evaluator.module.test.sourcepath">
+    <dirset dir="${module.action-evaluator.basedir}">
+      <include name="tests/src"/>
+    </dirset>
+  </path>
+
+  <!--
+    Package
+  -->
+  <target name="package.module.action-evaluator"
+          depends="compile.module.action-evaluator"
+          description="Package files">
+    <jar jarfile="${module.action-evaluator.jar.file}">
+      <fileset dir="${action-evaluator.output.dir}"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="Action Evaluator"/>
+        <attribute name="Implementation-Version" value="${action-evaluator.version}"/>
+      </manifest>
+    </jar>
+    <jar jarfile="${module.action-evaluator.src.jar.file}">
+      <fileset dir="${module.action-evaluator.basedir}/src"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="Action Evaluator Source"/>
+        <attribute name="Implementation-Version" value="${action-evaluator.version}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!--
+    Compile
+  -->
+  <target name="compile.module.action-evaluator"
+          description="Compile module action-evaluator">
+
+    <mkdir dir="${action-evaluator.output.dir}"/>
+
+    <javac destdir="${action-evaluator.output.dir}"
+           debug="${compiler.debug}"
+           nowarn="${compiler.generate.no.warnings}"
+           memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args}"/>
+      <classpath refid="action-evaluator.module.classpath"/>
+      <src refid="action-evaluator.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.action-evaluator"/>
+    </javac>
+    
+    <copy todir="${action-evaluator.output.dir}">
+      <fileset dir="${module.action-evaluator.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Compile tests
+  -->
+  <target name="compile.module.action-evaluator.tests"
+          depends="compile.module.action-evaluator"
+          description="compile module action-evaluator; test classes"
+          unless="skip.tests">
+    <mkdir dir="${action-evaluator.testoutput.dir}"/>
+    <javac destdir="${action-evaluator.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args}"/>
+      <classpath refid="action-evaluator.module.classpath"/>
+      <classpath location="${action-evaluator.output.dir}"/>
+      <src refid="action-evaluator.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.action-evaluator"/>
+    </javac>
+    
+    <copy todir="${action-evaluator.testoutput.dir}">
+      <fileset dir="${module.action-evaluator.basedir}/tests/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Clean generated and compiled classes
+  -->
+  <target name="clean.module.action-evaluator" description="cleanup module">
+    <delete dir="${action-evaluator.output.dir}"/>
+    <delete dir="${action-evaluator.testoutput.dir}"/>
+    <delete file="${module.action-evaluator.jar.file}"/>
+  </target>
+
+</project>

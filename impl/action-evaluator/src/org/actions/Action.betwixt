@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<info primitiveTypes="attribute">
+    <element name='action'>
+        <attribute name='name' property='name'/>
+        <attribute name='script-engine-name' property='scriptEngineName'/>
+        <attribute name='script-engine-extention' property='scriptEngineExtention'/>
+        <attribute name='script-engine-mime-type' property='scriptEngineMimeType'/>
+        <element name='script' property='action'/>
+        <addDefaults/>
+    </element>
+</info>

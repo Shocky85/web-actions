@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="spring-action-controller-hello-world" default="all">
+
+  <property file="build.properties"/>
+  <dirname property="module.hello-world.basedir" file="${ant.file}"/>
+  <property name="module.hello-world.name" value="hello-world"/>
+  <property name="module.hello-world.war.filename" value="${module.hello-world.name}.war"/>
+  <property name="module.hello-world.war.file" value="${basedir}/${module.hello-world.war.filename}"/>
+  <property name="hello-world.output.dir" value="${module.hello-world.basedir}/classes/production/hello-world"/>
+  <property name="hello-world.exploded.dir" value="${module.hello-world.basedir}/exploded"/>
+  <property name="hello-world.testoutput.dir" value="${module.hello-world.basedir}/classes/test/hello-world"/>
+
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.args.hello-world" value="${compiler.args}"/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+    <exclude name="**/.sbas/**"/>
+    <exclude name="**/.IJI.*/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <fileset id="library.action-evaluator" dir="${basedir}/lib">
+    <include name="action-evaluator.jar"/>
+  </fileset>
+  
+  <fileset id="library.commons-logging" dir="${basedir}/lib">
+    <include name="commons-logging.jar"/>
+  </fileset>
+  
+  <fileset id="library.jsr223-java-script-engine" dir="${basedir}/lib">
+    <include name="jsr223-java-script-engine.jar"/>
+  </fileset>
+  
+  <fileset id="library.jstl" dir="${basedir}/lib">
+    <include name="jstl.jar"/>
+    <include name="standard.jar"/>
+  </fileset>
+  
+  <fileset id="library.log4j-1.2.14" dir="${basedir}/lib">
+    <include name="log4j-1.2.14.jar"/>
+  </fileset>
+  
+  <fileset id="library.saxon" dir="${basedir}/lib">
+    <include name="saxon8.jar"/>
+  </fileset>
+  
+  <fileset id="library.servlet-api" dir="${basedir}/lib">
+    <include name="servlet-api.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-beans" dir="${basedir}/lib">
+    <include name="spring-beans.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-context" dir="${basedir}/lib">
+    <include name="spring-context.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-core" dir="${basedir}/lib">
+    <include name="spring-core.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-mock" dir="${basedir}/lib">
+    <include name="spring-mock.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-web" dir="${basedir}/lib">
+    <include name="spring-web.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-webmvc" dir="${basedir}/lib">
+    <include name="spring-webmvc.jar"/>
+  </fileset>
+  
+  <fileset id="library.spring-action-controller" dir="${basedir}/lib">
+    <include name="spring-action-controller.jar"/>
+  </fileset>
+  
+  <fileset id="library.commons-fileupload" dir="${basedir}/lib">
+    <include name="commons-fileupload.jar"/>
+  </fileset>
+  
+  <fileset id="library.commons-beanutils-core" dir="${basedir}/lib">
+    <include name="commons-beanutils-core-1.7.0.jar"/>
+  </fileset>
+  
+  <fileset id="library.commons-betwixt" dir="${basedir}/lib">
+    <include name="commons-betwixt-0.8.jar"/>
+  </fileset>
+  
+  <fileset id="library.commons-digester" dir="${basedir}/lib">
+    <include name="commons-digester-1.7.jar"/>
+  </fileset>
+  
+  <fileset id="library.xml-apis" dir="${basedir}/lib">
+    <include name="xml-apis-1.0.b2.jar"/>
+  </fileset>
+
+  <path id="hello-world.module.classpath">
+    <fileset refid="library.action-evaluator"/>
+    <fileset refid="library.commons-logging"/>
+    <fileset refid="library.jsr223-java-script-engine"/>
+    <fileset refid="library.jstl"/>
+    <fileset refid="library.log4j-1.2.14"/>
+    <fileset refid="library.saxon"/>
+    <fileset refid="library.servlet-api"/>
+    <fileset refid="library.spring-beans"/>
+    <fileset refid="library.spring-context"/>
+    <fileset refid="library.spring-core"/>
+    <fileset refid="library.spring-mock"/>
+    <fileset refid="library.spring-web"/>
+    <fileset refid="library.spring-webmvc"/>
+    <fileset refid="library.spring-action-controller"/>
+    <fileset refid="library.commons-fileupload"/>
+    <fileset refid="library.commons-beanutils-core"/>
+    <fileset refid="library.commons-betwixt"/>
+    <fileset refid="library.commons-digester"/>
+    <fileset refid="library.xml-apis"/>
+  </path>
+    
+  <patternset id="excluded.from.module.hello-world">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.hello-world">
+    <patternset refid="excluded.from.module.hello-world"/>
+  </patternset>
+  
+  <path id="hello-world.module.sourcepath">
+    <dirset dir="${module.hello-world.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="hello-world.module.test.sourcepath">
+    <dirset dir="${module.hello-world.basedir}">
+      <include name="WEB-INF/jactions/src"/>
+    </dirset>
+  </path>
+
+  <!--
+    Build and package all
+  -->
+  <target name="all"
+          depends="clean.module.hello-world, package.module.hello-world"
+          description="build all"/>
+
+  <!--
+    Compile
+  -->
+  <target name="compile.module.hello-world"
+          description="Compile module hello-world; production classes">
+    <mkdir dir="${hello-world.output.dir}"/>
+    <javac destdir="${hello-world.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.hello-world}"/>
+      <classpath refid="hello-world.module.classpath"/>
+      <src refid="hello-world.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.hello-world"/>
+    </javac>
+    
+    <copy todir="${hello-world.output.dir}">
+      <fileset dir="${module.hello-world.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Compile tests
+  -->
+  <target name="compile.module.hello-world.tests"
+          depends="compile.module.hello-world"
+          description="compile module hello-world; test classes" unless="skip.tests">
+    <mkdir dir="${hello-world.testoutput.dir}"/>
+    <javac destdir="${hello-world.testoutput.dir}" debug="${compiler.debug}"
+           nowarn="${compiler.generate.no.warnings}"
+           memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.hello-world}"/>
+      <classpath refid="hello-world.module.classpath"/>
+      <classpath location="${hello-world.output.dir}"/>
+      <src refid="hello-world.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.hello-world"/>
+    </javac>
+    
+    <copy todir="${hello-world.testoutput.dir}">
+      <fileset dir="${module.hello-world.basedir}/WEB-INF/jactions/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Build exploded dir
+  -->
+  <target name="exploded.module.hello-world"
+          depends="compile.module.hello-world"
+          description="Build exploded directory for module 'hello-world'">
+    <!-- Copy libraries -->
+    <copy todir="${hello-world.exploded.dir}/WEB-INF/lib">
+      <fileset refid="library.action-evaluator"/>
+      <fileset refid="library.commons-logging"/>
+      <fileset refid="library.jsr223-java-script-engine"/>
+      <fileset refid="library.jstl"/>
+      <fileset refid="library.log4j-1.2.14"/>
+      <fileset refid="library.saxon"/>
+      <fileset refid="library.spring-beans"/>
+      <fileset refid="library.spring-context"/>
+      <fileset refid="library.spring-core"/>
+      <fileset refid="library.spring-mock"/>
+      <fileset refid="library.spring-web"/>
+      <fileset refid="library.spring-webmvc"/>
+      <fileset refid="library.spring-action-controller"/>
+      <fileset refid="library.commons-fileupload"/>
+      <fileset refid="library.commons-beanutils-core"/>
+      <fileset refid="library.commons-betwixt"/>
+      <fileset refid="library.commons-digester"/>
+      <fileset refid="library.xml-apis"/>
+    </copy>
+    <!-- Copy WEB-INF -->
+    <copy todir="${hello-world.exploded.dir}/WEB-INF">
+      <fileset dir="${module.hello-world.basedir}/WEB-INF"/>
+    </copy>
+    <!-- Copy WEB-INF -->
+    <copy todir="${hello-world.exploded.dir}/">
+      <fileset dir="${module.hello-world.basedir}/resources"/>
+    </copy>
+    <!-- Classes -->
+    <copy todir="${hello-world.exploded.dir}/WEB-INF/classes">
+      <fileset dir="${module.hello-world.basedir}/classes/production/hello-world"/>
+    </copy>    
+  </target>
+
+  <!--
+    Package module
+  -->
+  <target name="package.module.hello-world"
+          depends="exploded.module.hello-world"
+          description="Package module">
+    <war warfile="${module.hello-world.war.file}"
+         webxml="${hello-world.exploded.dir}/WEB-INF/web.xml">
+      <fileset dir="${hello-world.exploded.dir}">
+        <exclude name="**/web.xml"/>
+      </fileset>
+    </war>
+  </target>
+
+  <target name="clean.module.hello-world" description="cleanup module">
+    <delete dir="${hello-world.output.dir}"/>
+    <delete dir="${hello-world.testoutput.dir}"/>
+    <delete dir="${hello-world.exploded.dir}"/>
+    <delete file="${module.hello-world.war.file}"/>
+  </target>
+
+</project>

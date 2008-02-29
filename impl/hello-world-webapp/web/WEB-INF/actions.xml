@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+  <actions>
+    <action name="hello-world" script-engine-extention="js">
+      <script>
+        print("Hello World\n");         
+      </script>
+    </action>
+    <action name="sayHello" script-engine-name="java-file">
+      <script>SayHello.java</script>
+    </action>
+  </actions>

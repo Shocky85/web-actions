@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <description>Hello World WebApp</description>
+
+  <!--
+    Create and configure ActionEvaluator
+  -->
+  <bean id="actionEvaluator" class="org.actions.ActionEvaluator">
+    <constructor-arg type="java.io.File" value="WEB-INF/actions.xml"/>
+  </bean>
+
+  <!--
+    Action controller
+  -->
+  <bean id="actionController" class="org.springframework.web.servlet.mvc.ActionController">
+    <!-- Action evaluator -->
+    <property name="evaluator" ref="actionEvaluator"/>
+    <!-- ScriptContext parameters, will be added to each ScriptContext -->
+    <property name="scriptContextParameters">
+      <map>
+        <!-- Action src directory -->
+        <entry key="JFSE_SOURCE_DIR">
+          <value type="java.io.File">WEB-INF/jactions/src</value>
+        </entry>
+        <!-- Action classes directory -->
+        <entry key="JFSE_CLASSES_DIR">
+          <value type="java.io.File">WEB-INF/jactions/classes</value>
+        </entry>
+        <!-- Additional compile classpath -->
+        <entry key="JFSE_COMPILE_CLASSPATH">
+          <list>
+            <value type="java.io.File">WEB-INF/jactions/lib/servlet-api.jar</value>
+          </list>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <!--
+    URL Mapper, route all requests to appController
+  -->
+  <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="mappings">
+      <props>
+        <prop key="/*">actionController</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!--
+    View Resolver
+  -->
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.XsltView"/>
+    <property name="prefix" value="/WEB-INF/xslt/"/>
+    <property name="suffix" value=".xslt"/>
+  </bean>
+
+</beans>

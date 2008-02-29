@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="module_action-processor" default="package.module.action-processor">
+
+  <property file="build.properties"/>
+  <dirname property="module.action-processor.basedir" file="${ant.file.module_action-processor}"/>
+  <property name="module.action-processor.name" value="action-processor"/>
+  <property name="module.action-processor.jar.filename" value="${module.action-processor.name}.jar"/>
+  <property name="module.action-processor.jar.file" value="${module.action-processor.basedir}/${module.action-processor.jar.filename}"/>
+  <property name="module.action-processor.src.jar.file" value="${module.action-processor.basedir}/${module.action-processor.name}-src.jar"/>
+  <property name="action-processor.output.dir" value="${module.action-processor.basedir}/classes/production/action-processor"/>
+  <property name="action-processor.testoutput.dir" value="${module.action-processor.basedir}/classes/test/action-processor"/>
+
+  <!-- Project Libraries -->
+    
+  <path id="action-processor.module.classpath">
+    <fileset refid="module.xml-transform"/>
+    <fileset refid="module.action-evaluator"/>
+    <fileset refid="library.jsr223-java-script-engine"/>
+    <fileset refid="library.log4j"/>
+    <fileset refid="library.saxon"/>
+    <fileset refid="library.spring-core"/>
+    <fileset refid="library.spring-test"/>
+    <fileset refid="library.spring-webmvc-portlet"/>
+    <fileset refid="library.spring-webmvc"/>
+    <fileset refid="library.commons-logging"/>
+    <fileset refid="library.servlet-api"/>
+    <fileset refid="library.portlet-api"/>
+    <fileset refid="library.junit"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.action-processor">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.action-processor">
+    <patternset refid="excluded.from.module.action-processor"/>
+  </patternset>
+  
+  <path id="action-processor.module.sourcepath">
+    <dirset dir="${module.action-processor.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="action-processor.module.test.sourcepath">
+    <dirset dir="${module.action-processor.basedir}">
+      <include name="tests/src"/>
+    </dirset>
+  </path>
+
+  <!--
+    Package
+  -->
+  <target name="package.module.action-processor"
+          depends="compile.module.action-processor"
+          description="Package module">
+
+    <jar jarfile="${module.action-processor.jar.file}">
+      <fileset dir="${action-processor.output.dir}">
+        <exclude name="**/log4j.properties"/>
+      </fileset>
+      <manifest>
+        <attribute name="Implementation-Title" value="Action Processor"/>
+        <attribute name="Implementation-Version" value="${action-processor.version}"/>
+      </manifest>
+    </jar>
+
+    <jar jarfile="${module.action-processor.src.jar.file}">
+      <fileset dir="${module.action-processor.basedir}/src"/>
+      <manifest>
+        <attribute name="Implementation-Title" value="Action Processor Source"/>
+        <attribute name="Implementation-Version" value="${action-processor.version}"/>
+      </manifest>
+    </jar>
+
+  </target>
+
+  <!--
+    Compile
+  -->
+  <target name="compile.module.action-processor"
+          description="Compile module action-processor; production classes">
+    <mkdir dir="${action-processor.output.dir}"/>
+    <javac destdir="${action-processor.output.dir}" debug="${compiler.debug}"
+           nowarn="${compiler.generate.no.warnings}"
+           memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args}"/>
+      <classpath refid="action-processor.module.classpath"/>
+      <src refid="action-processor.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.action-processor"/>
+    </javac>
+    
+    <copy todir="${action-processor.output.dir}">
+      <fileset dir="${module.action-processor.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Compile tests
+  -->
+  <target name="compile.module.action-processor.tests"
+          depends="compile.module.action-processor"
+          description="compile module action-processor; test classes" unless="skip.tests">
+    <mkdir dir="${action-processor.testoutput.dir}"/>
+    <javac destdir="${action-processor.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args}"/>
+      <classpath refid="action-processor.module.classpath"/>
+      <classpath location="${action-processor.output.dir}"/>
+      <src refid="action-processor.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.action-processor"/>
+    </javac>
+    
+    <copy todir="${action-processor.testoutput.dir}">
+      <fileset dir="${module.action-processor.basedir}/tests/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+    Clean
+  -->
+  <target name="clean.module.action-processor" description="cleanup module">
+    <delete dir="${action-processor.output.dir}"/>
+    <delete dir="${action-processor.testoutput.dir}"/>
+    <delete file="${module.action-processor.jar.file}"/>
+  </target>
+  
+</project>
