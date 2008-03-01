@@ -1,11 +1,24 @@
-<?xml version='1.0' ?>
+<?xml version="1.0" ?>
   <actions>
-    <action name="hello-world" script-engine-extention="js">
-      <script>
-        print("Hello World\n");         
+  
+    <!-- JavaScript action -->
+    <action name="sayJavaScriptHello" script-engine-extention="js">
+      <script><![CDATA[                
+        // create a new result map
+        var result = new java.util.HashMap();
+        // add name
+        result.put("name", context.getAttribute("name"));
+        // add from parameter
+        result.put("from", "JavaScript");
+        // return result map
+        result
+      ]]>
       </script>
     </action>
-    <action name="sayHello" script-engine-name="java-file">
+
+    <!-- Java action -->
+    <action name="sayJavaHello" script-engine-name="java-file">
       <script>SayHello.java</script>
     </action>
+
   </actions>

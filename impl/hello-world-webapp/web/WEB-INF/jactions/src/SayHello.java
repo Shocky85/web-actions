@@ -15,22 +15,19 @@ import java.util.HashMap;
  */
 public class SayHello {
 
-  /** Component logger */
-  protected static Logger logger = Logger.getLogger(SayHello.class.getName());
-
   public static Object eval(ScriptContext ctx) {
     // get request
-    HttpServletRequest request = (HttpServletRequest) ctx.getAttribute("request", ScriptContext.ENGINE_SCOPE);
-    System.out.println("RemoteAddress="+request.getRemoteAddr());
-
+    HttpServletRequest request = (HttpServletRequest) ctx.getAttribute("request", ScriptContext.ENGINE_SCOPE);    
+    // create a new result map
     Map<String, Object> reslts = new HashMap<String, Object>(1);
-    // get name to say hello to
+    // add from parameter
+    reslts.put("from", "Java");
+    // add name parameter if given
     if (null!=ctx.getAttribute("name")) {
       reslts.put("name", ctx.getAttribute("name"));
     }
-    System.out.println("request> Name="+reslts.get("name"));
-
-    return new ModelAndView("hello.html", reslts);
+    // return new model and view
+    return new ModelAndView(request.getRequestURI(), reslts);
   }
 
 }
