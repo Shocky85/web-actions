@@ -1,3 +1,11 @@
 #summary Hello World sample application
 
 = Hello World =
+
+ It is a good practice to start from something simple and progress to more complex things. We also will follow this approach in our 'Hello World' application.
+
+ Before we begin, if you wish to have the full application in front of you, please download it here. But you don't have to, we will be as detailed as possible.
+
+  
+
+ 
