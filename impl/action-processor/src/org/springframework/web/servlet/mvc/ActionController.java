@@ -2,6 +2,7 @@ package org.springframework.web.servlet.mvc;
 
 import org.actions.ActionEvaluator;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.webactions.Sentence;
 import org.webactions.SentenceParser;
 import org.webactions.SimpleActionController;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.HashMap;
 
 /**
  * Controller parse request parameters and invoke ActionEvaluator 
@@ -24,8 +26,11 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
   /** Action controller */
   private final SimpleActionController actionController = new SimpleActionController();
 
+  /** Same view name */
+  public static final String SAME_VIEW = ":this";
+
   /** Default view name */
-  protected String defaultView = "index.html";
+  protected String defaultView = "index.xhtml";
 
   /**
    * Return default view name
@@ -58,14 +63,36 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     ScriptContext context = actionController.getScriptContext(httpServletRequest, httpServletResponse);
     // process actions
     Object result = actionController.processActions(sentences, context);
+
+    // log some debug info
+    if (logger.isDebugEnabled()){
+      logger.debug("Actions processed with result {"+result+"}");
+    }
+
+    // result model and view
+    ModelAndView modelAndView = null;
+
+    // return requested view
+    if (null==result) getRequestedView(httpServletRequest);
+
     // check the result
     if (result instanceof ModelAndView) {
-      return (ModelAndView)result;
+      // cast
+      modelAndView = (ModelAndView) result;
+      // if view is not set or set to `:this` use the current view
+      if (!modelAndView.hasView() || SAME_VIEW.equals(modelAndView.getViewName())) {
+        modelAndView = new ModelAndView(httpServletRequest.getRequestURI() ,modelAndView.getModel());
+      }
+    } else if (result instanceof Map) {
+      modelAndView = new ModelAndView(httpServletRequest.getRequestURI(), (Map)result);
+    } else {
+      Map<String, Object> model = new HashMap<String, Object>(1);
+      model.put("result", result);
+      modelAndView = new ModelAndView(httpServletRequest.getRequestURI(), model);
     }
-    // @todo handle ModelAndView return if action didn't return ModelAndView
 
-    // return requested view 
-    return getRequestedView(httpServletRequest);
+    // return view and a model
+    return modelAndView;
   }
 
   /**
@@ -80,7 +107,10 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     // remove leading slash
     if (requestURI.startsWith("/")) requestURI = requestURI.replaceFirst("/+", "");
     // if requested URI is blank or and with / append default view name
-    if (requestURI.trim().length()==0 || requestURI.endsWith("/")) requestURI += defaultView;
+    if (requestURI.trim().length()==0 || requestURI.endsWith("/")) {
+      if (logger.isDebugEnabled()) logger.debug("Mapping request {"+requestURI+"} to {"+(requestURI + defaultView)+"}");
+      requestURI += defaultView;
+    }
     // return model and view
     return new ModelAndView(requestURI);
   }
