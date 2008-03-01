@@ -72,26 +72,31 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     // result model and view
     ModelAndView modelAndView = null;
 
-    // return requested view
-    if (null==result) getRequestedView(httpServletRequest);
+    // return requested view when result is null
+    if (null==result) {
+      modelAndView = getRequestedView(httpServletRequest);
+      return modelAndView;
+    }
 
     // check the result
     if (result instanceof ModelAndView) {
-      // cast
+      // cast it
       modelAndView = (ModelAndView) result;
       // if view is not set or set to `:this` use the current view
       if (!modelAndView.hasView() || SAME_VIEW.equals(modelAndView.getViewName())) {
         modelAndView = new ModelAndView(httpServletRequest.getRequestURI() ,modelAndView.getModel());
       }
     } else if (result instanceof Map) {
+      // user returned map to create a new Model and View
       modelAndView = new ModelAndView(httpServletRequest.getRequestURI(), (Map)result);
     } else {
+      // create a new Model and View from returned object
       Map<String, Object> model = new HashMap<String, Object>(1);
       model.put("result", result);
       modelAndView = new ModelAndView(httpServletRequest.getRequestURI(), model);
     }
 
-    // return view and a model
+    // return Model and View
     return modelAndView;
   }
 
