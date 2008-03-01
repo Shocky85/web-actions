@@ -20,6 +20,8 @@
   <bean id="actionController" class="org.springframework.web.servlet.mvc.ActionController">
     <!-- Action evaluator -->
     <property name="evaluator" ref="actionEvaluator"/>
+    <!-- Set default view -->
+    <property name="defaultView" value="index.xhtml"/>
     <!-- ScriptContext parameters, will be added to each ScriptContext -->
     <property name="scriptContextParameters">
       <map>
@@ -47,7 +49,8 @@
   <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="mappings">
       <props>
-        <prop key="/*">actionController</prop>
+        <prop key="**/*.xhtml">actionController</prop>        
+        <prop key="/">actionController</prop>
       </props>
     </property>
   </bean>
@@ -57,7 +60,7 @@
   -->
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.XsltView"/>
-    <property name="prefix" value="/WEB-INF/xslt/"/>
+    <property name="prefix" value="/"/>
     <property name="suffix" value=".xslt"/>
   </bean>
 
