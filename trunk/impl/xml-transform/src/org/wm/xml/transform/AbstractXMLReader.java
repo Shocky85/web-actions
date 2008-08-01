@@ -3,28 +3,24 @@ package org.wm.xml.transform;
 import org.xml.sax.*;
 
 import java.io.IOException;
-
-// Error code prefix "XTF0000"
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Default template for an XML reader. To write a new <code>XMLReader</code>,
  * simply inherit from this class and implement <code>parse</code> method.
  *
  * @author Aleksei Valikov
+ * @author Ivan Latysh
  * @see org.xml.sax.XMLReader
  */
 public abstract class AbstractXMLReader implements XMLReader {
-  /**
-   * Namespaces feature URI.
-   */
-  public static final String NAMESPACES_FEATURE =
-    "http://xml.org/sax/features/namespaces";
+// Error code prefix "XTF0000"
 
-  /**
-   * Namespace-prefixes feature URI.
-   */
-  public static final String NAMESPACE_PREFIXES_FEATURE =
-    "http://xml.org/sax/features/namespace-prefixes";
+  /** Namespaces feature URI. */
+  public static final String NAMESPACES_FEATURE = "http://xml.org/sax/features/namespaces";
+  /** Namespace-prefixes feature URI. */
+  public static final String NAMESPACE_PREFIXES_FEATURE = "http://xml.org/sax/features/namespace-prefixes";
 
   /**
    * Empty attributes list.
@@ -60,6 +56,9 @@ public abstract class AbstractXMLReader implements XMLReader {
    * Namespace prefixes feature flag. By default false.
    */
   protected boolean fNamespacePrefixes = false;
+
+  /** Properties map */
+  protected Map<String, Object> properties = new HashMap<String, Object>();
 
   /**
    * Sets the content handler.
@@ -144,11 +143,9 @@ public abstract class AbstractXMLReader implements XMLReader {
    * @throws SAXNotSupportedException  When the XMLReader recognizes the
    *                                   property name but cannot set the requested value.
    */
-  public void setProperty(final String name, final Object value)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
-    // Throw the exception
-    throw new SAXNotRecognizedException(
-      "[XTF00000] Property " + name + " is not recognized.");
+  public void setProperty(final String name, final Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
+    // add property to the map
+    properties.put(name, value);
   }
 
   /**
@@ -162,11 +159,10 @@ public abstract class AbstractXMLReader implements XMLReader {
    * @throws SAXNotSupportedException  When the XMLReader recognizes the
    *                                   property name but cannot determine its value at this time.
    */
-  public Object getProperty(final String name)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+  public Object getProperty(final String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+    if (properties.containsKey(name)) return properties.get(name);
     // Throw the exception
-    throw new SAXNotRecognizedException(
-      "[XTF00001] Property " + name + " is not recognized.");
+    throw new SAXNotRecognizedException("[XTF00001] Property " + name + " is not recognized.");
   }
 
   /**
@@ -180,8 +176,7 @@ public abstract class AbstractXMLReader implements XMLReader {
    * @throws SAXNotSupportedException  When the XMLReader recognizes the feature
    *                                   name but cannot set the requested value.
    */
-  public void setFeature(final String name, final boolean value)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+  public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
     // Check, if feature is namespace feature
     if (name.equals(NAMESPACES_FEATURE)) {
       fNamespaces = value;
@@ -195,8 +190,7 @@ public abstract class AbstractXMLReader implements XMLReader {
     }
 
     // Otherwise feature is not recognized
-    throw new SAXNotRecognizedException(
-      "[XTF00002] Feature " + name + " is not recognized.");
+    throw new SAXNotRecognizedException("[XTF00002] Feature " + name + " is not recognized.");
   }
 
   /**
@@ -211,7 +205,7 @@ public abstract class AbstractXMLReader implements XMLReader {
    *                                   name but cannot determine its value at this time.
    */
   public boolean getFeature(final String name)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+          throws SAXNotRecognizedException, SAXNotSupportedException {
     // Check, if feature is namespace feature
     if (name.equals(NAMESPACES_FEATURE))
       return fNamespaces;
@@ -222,7 +216,7 @@ public abstract class AbstractXMLReader implements XMLReader {
 
     // Otherwise, feature is not recognized
     throw new SAXNotRecognizedException(
-      "[XTF00003] Feature " + name + " is not recognized.");
+            "[XTF00003] Feature " + name + " is not recognized.");
   }
 
   /**
@@ -251,7 +245,7 @@ public abstract class AbstractXMLReader implements XMLReader {
    *                      stream or character stream supplied by the application.
    */
   public abstract void parse(InputSource input)
-    throws IOException, SAXException;
+          throws IOException, SAXException;
 
   /**
    * Implementation of an empty attributes list.
