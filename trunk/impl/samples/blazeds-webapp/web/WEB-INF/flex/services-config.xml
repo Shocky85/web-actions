@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services-config>
+
+  <services>
+    <service id="remoting-service" class="flex.messaging.services.RemotingService">
+      <adapters>
+        <adapter-definition id="web-actions" class="flex.messaging.services.remoting.adapters.ActionAdapter" default="true">
+          <properties>
+            <actions-config>WEB-INF/actions.xml</actions-config>
+            <actions-source-dir>WEB-INF/actions/src</actions-source-dir>
+            <actions-classes-dir>WEB-INF/actions/classes</actions-classes-dir>
+            <!--<actions-classes-dir>WEB-INF/classes</actions-classes-dir>-->
+            <actions-compile-lib-dir>WEB-INF/actions/lib</actions-compile-lib-dir>
+          </properties>
+        </adapter-definition>
+      </adapters>
+      <!-- WebActions destination -->
+      <destination id="web-actions">
+      </destination>
+      <default-channels>
+        <channel ref="amf"/>
+      </default-channels>
+    </service>
+  </services>
+
+  <channels>
+    <channel-definition id="amf" class="mx.messaging.channels.AMFChannel">
+      <endpoint url="http://localhost:8080/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+    </channel-definition>
+  </channels>
+
+  <logging>
+    <target class="flex.messaging.log.ConsoleTarget" level="Debug">
+      <properties>
+        <prefix>[BlazeDS]</prefix>
+        <includeDate>false</includeDate>
+        <includeTime>false</includeTime>
+        <includeLevel>true</includeLevel>
+        <includeCategory>true</includeCategory>
+      </properties>
+      <filters>
+        <pattern>Endpoint.*</pattern>
+        <pattern>Service.*</pattern>
+        <pattern>Configuration</pattern>
+        <pattern>Message.Remoting</pattern>
+      </filters>
+    </target>
+  </logging>
+
+  <system>
+    <redeploy>
+      <enabled>true</enabled>
+      <watch-interval>20</watch-interval>
+      <watch-file>{context.root}/WEB-INF/flex/services-config.xml</watch-file>
+    </redeploy>
+  </system>
+
+</services-config>
