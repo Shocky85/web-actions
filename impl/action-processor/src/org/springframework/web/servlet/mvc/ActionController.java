@@ -2,17 +2,16 @@ package org.springframework.web.servlet.mvc;
 
 import org.actions.ActionEvaluator;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.webactions.Sentence;
 import org.webactions.SentenceParser;
-import org.webactions.SimpleActionController;
+import org.webactions.ServletJavaActionController;
 
 import javax.script.ScriptContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.HashMap;
 
 /**
  * Controller parse request parameters and invoke ActionEvaluator 
@@ -24,7 +23,7 @@ import java.util.HashMap;
 public class ActionController extends org.springframework.web.servlet.mvc.AbstractController {
 
   /** Action controller */
-  private final SimpleActionController actionController = new SimpleActionController();
+  private final ServletJavaActionController actionController = new ServletJavaActionController();
 
   /** Same view name */
   public static final String SAME_VIEW = ":this";
@@ -62,7 +61,7 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     // get ScriptContext
     ScriptContext context = actionController.getScriptContext(httpServletRequest, httpServletResponse);
     // process actions
-    Object result = actionController.processActions(sentences, context);
+    Object result = actionController.process(sentences, context);
 
     // log some debug info
     if (logger.isDebugEnabled()){
@@ -178,6 +177,6 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
   }
 
   public Object processActions(TreeMap<Sentence, Sentence> sentences, ScriptContext context) {
-    return actionController.processActions(sentences, context);
+    return actionController.process(sentences, context);
   }
 }
