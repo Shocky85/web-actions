@@ -1,14 +1,16 @@
 package org.springframework.web.portlet.mvc;
 
-import org.webactions.SimpleActionController;
+import org.actions.ActionEvaluator;
+import org.springframework.web.portlet.ModelAndView;
+import org.webactions.PortletJavaActionController;
 import org.webactions.Sentence;
 import org.webactions.SentenceParser;
-import org.springframework.web.portlet.ModelAndView;
-import org.actions.ActionEvaluator;
 
 import javax.portlet.*;
 import javax.script.ScriptContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Controller parse incoming parameters into sentences and invoke requested actions using ActionEvaluator
@@ -21,7 +23,7 @@ public class ActionController extends org.springframework.web.portlet.mvc.Abstra
   // Error prefix ACP00001
 
   /** Action controller */
-  private final SimpleActionController actionController = new SimpleActionController();
+  private final PortletJavaActionController actionController = new PortletJavaActionController();
 
   /** Last or default view */
   protected String view = "index";
@@ -138,7 +140,7 @@ public class ActionController extends org.springframework.web.portlet.mvc.Abstra
       // process actions
       Object result = null;
       synchronized(appObjects) {
-        result = actionController.processActions(sentences, context);
+        result = actionController.process(sentences, context);
       }
       // check the result
       if (result instanceof org.springframework.web.servlet.ModelAndView) {
