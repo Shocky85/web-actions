@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<actions>
+
+  <!--
+    Reply with Hello to given name
+  -->
+  <action name="sayHello" script-engine-name="java-file">
+    <script>SayHello.java</script>
+  </action>
+
+</actions>

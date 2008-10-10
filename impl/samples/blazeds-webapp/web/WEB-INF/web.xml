@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <!-- BlazeDS Http Flex Session attribute and binding listener support -->
+  <listener>
+    <listener-class>flex.messaging.HttpFlexSession</listener-class>
+  </listener>
+
+  <!-- BlazeDS MessageBroker Servlet -->
+  <servlet>
+    <servlet-name>MessageBrokerServlet</servlet-name>
+    <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class>
+    <init-param>
+      <param-name>services.configuration.file</param-name>
+      <param-value>/WEB-INF/flex/services-config.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>MessageBrokerServlet</servlet-name>
+    <url-pattern>/amf</url-pattern>
+  </servlet-mapping>
+
+  <!-- Actions config -->
+<!--
+  <context-param>
+    <param-name>actions-config</param-name>
+    <param-value>WEB-INF/actions.xml</param-value>
+  </context-param>
+-->
+  <!-- Actions src dir -->
+<!--
+  <context-param>
+    <param-name>actions-source-dir</param-name>
+    <param-value>WEB-INF/jactions/src</param-value>
+  </context-param>
+-->
+  <!-- Actions classes dir -->
+<!--
+  <context-param>
+    <param-name>actions-classes-dir</param-name>
+    <param-value>WEB-INF/jactions/classes</param-value>    
+  </context-param>
+-->
+  <!-- Actions additional library dir,
+  application libraries WEB-INF/lib added automaticaly, as well as WEB-INF/classes -->
+<!--
+  <context-param>
+    <param-name>actions-compile-lib-dir</param-name>
+    <param-value>WEB-INF/jactions/lib</param-value>
+  </context-param>
+-->
+
+  <welcome-file-list>
+    <welcome-file>main.html</welcome-file>
+    <welcome-file>index.jspx</welcome-file>
+  </welcome-file-list>
+
+</web-app>
