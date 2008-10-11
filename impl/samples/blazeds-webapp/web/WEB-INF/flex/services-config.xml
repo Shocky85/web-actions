@@ -9,7 +9,6 @@
             <actions-config>WEB-INF/actions.xml</actions-config>
             <actions-source-dir>WEB-INF/actions/src</actions-source-dir>
             <actions-classes-dir>WEB-INF/actions/classes</actions-classes-dir>
-            <!--<actions-classes-dir>WEB-INF/classes</actions-classes-dir>-->
             <actions-compile-lib-dir>WEB-INF/actions/lib</actions-compile-lib-dir>
           </properties>
         </adapter-definition>

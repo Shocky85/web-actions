@@ -244,13 +244,14 @@ public class ActionAdapter extends ServiceAdapter {
     ///////////////////////////////////
     // Configure ActionController
     ///////////////////////////////////
-
     // get actions-config
     String _actionsConfig = properties.getPropertyAsString("actions-config", null);
     if (null!=_actionsConfig) {
       File actionConfig = null;
         // configure Action Controller
         try {
+          // set application home
+          actionController.setApplicationHome(appHome);
           // get actions-source-dir
           actionController.setActionSourceDir(new File(appHome, properties.getPropertyAsString("actions-source-dir", "/WEB-INF/actions/src")));
           // get actions-classes-dir
@@ -327,17 +328,6 @@ public class ActionAdapter extends ServiceAdapter {
       //////////////////////////
       // process action
       //////////////////////////
-
-/*
-      // Parse sentences
-      TreeMap<Sentence, Sentence> sentences = new TreeMap<Sentence, Sentence>(new SentenceComparator());
-      int i = 0;
-      for (Object o : remotingMessage.getParameters()) {
-        Sentence newSentence = new Sentence(methodName+"~.param-"+i, new Object[]{o});
-        sentences.put(newSentence, newSentence);
-        i++;
-      }
-*/
 
       // Get script context
       ScriptContext context = actionController.getScriptContext(FlexContext.getHttpRequest(), FlexContext.getHttpResponse());

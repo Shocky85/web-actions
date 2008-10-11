@@ -3,6 +3,8 @@
 	<title>Source of blazeds-webapp</title>
 	<nodes>
 		<node label="src" icon="classpathIcon" expanded="true">
+			<node label="ContactManager.mxml" icon="mxmlIcon" url="source/ContactManager.mxml.html"/>
+			<node label="HelloActionPanel.mxml" icon="mxmlIcon" url="source/HelloActionPanel.mxml.html"/>
 			<node selected="true" label="main.mxml" icon="mxmlAppIcon" url="source/main.mxml.html"/>
 		</node>
 	</nodes>

@@ -31,6 +31,8 @@ abstract public class AbstractActionController {
   protected Map<String, Object> scriptContextParameters;
   /** Action config */
   protected File actionConfig;
+  /* Action config modification time */
+  protected long actionConfigModificationTime;
   /** Action evaluator */
   protected ActionEvaluator evaluator;
 
@@ -80,6 +82,15 @@ abstract public class AbstractActionController {
   }
 
   /**
+   * Return action config last modified time
+   *
+   * @return last modified time
+   */
+  public long getActionConfigModificationTime() {
+    return actionConfigModificationTime;
+  }
+
+  /**
    * Set actions config
    *
    * @param actionConfig action config
@@ -89,7 +100,8 @@ abstract public class AbstractActionController {
    */
   public void setActionConfig(File actionConfig) throws ConfigurationException, IOException {
     this.actionConfig = actionConfig;
-    evaluator.configure(actionConfig);
+    this.actionConfigModificationTime = actionConfig.lastModified();
+    configure();
   }
 
   /**
@@ -113,6 +125,15 @@ abstract public class AbstractActionController {
    * @throws ProcessingException when exception occured during action processing
    */
   public Object process(String action, ScriptContext scriptContext) throws ProcessingException {
+    // reload configuration if needed
+    if (actionConfig.lastModified() > actionConfigModificationTime) {
+      try {
+        logger.info("Reloading modified configuration file {"+actionConfig.getAbsolutePath()+"}.");
+        reConfigure();
+      } catch (Exception e) {
+        throw new ProcessingException("Unable to re-configure action evaluator.", e);
+      }
+    }
     // process action
     return evaluator.process(action, scriptContext);
   }
@@ -124,25 +145,27 @@ abstract public class AbstractActionController {
    * @param libDir lib dir
    * @return file array
    */
-  public List<File> constructClasspath(File classesDir, File libDir) {
+  public List<File> constructClasspath(File[] classesDir, File[] libDir) {
     List<File> classpath = new ArrayList<File>();
 
-    // webapp classes should be in WEB-INF/classes
-    if (classesDir.isDirectory()) {
-      classpath.add(classesDir);
-    } else {
-      logger.warn("Webapp classes directory {"+classesDir+"} does not exist.");
+    for (File f : classesDir) {
+      if (f.isDirectory()) {
+        classpath.add(f);
+      } else {
+        logger.warn("Webapp classes directory {"+f+"} does not exist.");
+      }
     }
 
-    // webapp libs should be in WEB-INF/lib
-    logger.debug("Trying to load libraries from {"+ libDir.getAbsolutePath()+"}.");
-    if (libDir.isDirectory()) {
-      File[] libs = libDir.listFiles(new FilenameFilter(){
-        public boolean accept(File dir, String name) {
-          return null!=name && name.endsWith(".jar");
-        }
-      });
-      classpath.addAll(Arrays.asList(libs));
+    for (File f : libDir) {
+      logger.debug("Trying to load libraries from {"+ f.getAbsolutePath()+"}.");
+      if (f.isDirectory()) {
+        File[] libs = f.listFiles(new FilenameFilter(){
+          public boolean accept(File dir, String name) {
+            return null!=name && name.endsWith(".jar");
+          }
+        });
+        classpath.addAll(Arrays.asList(libs));
+      }
     }
 
     // return classpath array
@@ -165,6 +188,26 @@ abstract public class AbstractActionController {
     }
     // return context
     return context;
+  }
+
+  /**
+   * Configure action evaluator from {@link #actionConfig}
+   *
+   * @throws java.io.IOException when unable to load configuration
+   * @throws org.actions.ConfigurationException when configuration failed
+   */
+  public void configure() throws IOException, ConfigurationException {
+    evaluator.configure(actionConfig);
+  }
+
+  /**
+   * Reload configuration from {@link #actionConfig}
+   *
+   * @throws java.io.IOException when unable to load configuration
+   * @throws org.actions.ConfigurationException when configuration failed
+   */
+  public void reConfigure() throws IOException, ConfigurationException {
+    configure();
   }
 
 }

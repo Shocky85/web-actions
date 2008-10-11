@@ -9,7 +9,43 @@
     <listener-class>flex.messaging.HttpFlexSession</listener-class>
   </listener>
 
-  <!-- BlazeDS MessageBroker Servlet -->
+  <!--
+      DatabaseAdminServlet: this servlet can is used to ensure that
+      eXist is running in the background.
+  -->
+  <servlet>
+      <servlet-name>EXistServlet</servlet-name>
+      <servlet-class>org.exist.http.servlets.EXistServlet</servlet-class>
+
+    <!--
+        eXist's home directory. All file names in the configuration file
+        will be relative to this directory.
+    -->
+    <init-param>
+        <param-name>basedir</param-name>
+        <param-value>WEB-INF/exist</param-value>
+    </init-param>
+
+      <!--
+          where to find eXist's configuration file relative to the basedir
+          of the web-application.
+      -->
+      <init-param>
+          <param-name>configuration</param-name>
+          <param-value>conf.xml</param-value>
+      </init-param>
+
+      <init-param>
+          <param-name>start</param-name>
+          <param-value>true</param-value>
+      </init-param>
+
+      <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!--
+    BlazeDS MessageBroker Servlet. Enable EMF transport between FLEX app and server 
+  -->
   <servlet>
     <servlet-name>MessageBrokerServlet</servlet-name>
     <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class>
@@ -17,43 +53,13 @@
       <param-name>services.configuration.file</param-name>
       <param-value>/WEB-INF/flex/services-config.xml</param-value>
     </init-param>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>2</load-on-startup>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>MessageBrokerServlet</servlet-name>
     <url-pattern>/amf</url-pattern>
   </servlet-mapping>
-
-  <!-- Actions config -->
-<!--
-  <context-param>
-    <param-name>actions-config</param-name>
-    <param-value>WEB-INF/actions.xml</param-value>
-  </context-param>
--->
-  <!-- Actions src dir -->
-<!--
-  <context-param>
-    <param-name>actions-source-dir</param-name>
-    <param-value>WEB-INF/jactions/src</param-value>
-  </context-param>
--->
-  <!-- Actions classes dir -->
-<!--
-  <context-param>
-    <param-name>actions-classes-dir</param-name>
-    <param-value>WEB-INF/jactions/classes</param-value>    
-  </context-param>
--->
-  <!-- Actions additional library dir,
-  application libraries WEB-INF/lib added automaticaly, as well as WEB-INF/classes -->
-<!--
-  <context-param>
-    <param-name>actions-compile-lib-dir</param-name>
-    <param-value>WEB-INF/jactions/lib</param-value>
-  </context-param>
--->
 
   <welcome-file-list>
     <welcome-file>main.html</welcome-file>
