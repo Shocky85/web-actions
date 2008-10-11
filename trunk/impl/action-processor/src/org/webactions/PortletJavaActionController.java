@@ -110,7 +110,10 @@ public class PortletJavaActionController extends JavaActionController {
     }
 
     // set compile classpath
-    List<File> compileClasspath = getAppClasspath(request);
+    List<File> compileClasspath = constructClasspath(
+        new File[]{actionClassesDir, new File(applicationHome, "/WEB-INF/classes")},
+        new File[] {actionLibsDir, new File(applicationHome, "/WEB-INF/lib")});
+
     // check if compile classpath has been already defined
     if (null!=context.getAttribute(JFSE_COMPILE_CLASSPATH)) {
       List<File> addClasspath = (List<File>) context.getAttribute(JFSE_COMPILE_CLASSPATH);
@@ -127,24 +130,6 @@ public class PortletJavaActionController extends JavaActionController {
     context.setAttribute("response", response, ScriptContext.ENGINE_SCOPE);
     // return it
     return context;
-  }
-
-  /**
-   * Construct and return an array of files with compile classpath
-   *
-   * @param request HttpServletRequest
-   * @return file array
-   */
-  protected List<File> getAppClasspath(ActionRequest request) {
-    // get app home
-    File appHome = new File(request.getPortletSession().getPortletContext().getRealPath("/"));
-    // webapp classes should be in WEB-INF/classes
-    File appClasses = new File(appHome, "WEB-INF/classes");
-    // webapp libs should be in WEB-INF/lib
-    File appLib = new File(appHome, "WEB-INF/lib");
-
-    // return classpath array
-    return constructClasspath(appClasses, appLib);
   }
 
 }

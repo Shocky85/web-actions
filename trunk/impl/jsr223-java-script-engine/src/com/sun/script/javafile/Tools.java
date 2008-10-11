@@ -1,5 +1,7 @@
 package com.sun.script.javafile;
 
+import org.apache.log4j.Logger;
+
 import javax.script.ScriptException;
 import javax.tools.*;
 import java.io.*;
@@ -11,6 +13,9 @@ import java.util.*;
  * @since 27-Apr-2007 : 11:37:22 PM
  */
 public class Tools {
+
+  /** Component logger */
+  protected static Logger logger = Logger.getLogger(Tools.class.getName());
 
   /**
    * Do not instantiate this class
@@ -111,6 +116,7 @@ public class Tools {
           clp.add(a_classpath);
         }
         stdManager.setLocation(StandardLocation.CLASS_PATH, clp);
+        if (logger.isDebugEnabled()) logger.debug("Classpath: "+Arrays.toString(clp.toArray()));
       }
 
       // prepare the compilation unit

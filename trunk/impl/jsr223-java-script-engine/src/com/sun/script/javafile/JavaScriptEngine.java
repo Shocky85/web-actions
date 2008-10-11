@@ -1,5 +1,7 @@
 package com.sun.script.javafile;
 
+import org.apache.log4j.Logger;
+
 import javax.script.*;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -12,6 +14,8 @@ import java.net.URL;
  * This is script engine for Java programming language.
  */
 public class JavaScriptEngine extends AbstractScriptEngine {
+  /** Component logger */
+  protected Logger logger = Logger.getLogger(this.getClass().getName());
 
   /** Classes folder, where compiled script classes will be saved */
   protected static final String CLASSES_DIR = "JFSE_CLASSES_DIR";
@@ -71,20 +75,22 @@ public class JavaScriptEngine extends AbstractScriptEngine {
         cl = getClass().getClassLoader();        
       }
 
-
       // get script class file
       String scriptClassFileName = scriptClass+".class";
       String relativePath = scriptsDir.toURI().relativize(scriptFile.getParentFile().toURI()).toString();
       File scriptClassFile = new File(classesDir, (!relativePath.endsWith("/") ?relativePath+"/" :relativePath) +scriptClassFileName);
       // check if script has been modified
       if (!scriptClassFile.exists() || scriptClassFile.exists() && scriptClassFile.lastModified() < scriptFile.lastModified()) {
+        logger.debug("{"+scriptClassFile.getAbsolutePath()+"} "+(scriptClassFile.exists() ?"is outdated." :"does not exist."));
         if (scriptClassFile.exists()) {
+          logger.debug("Recycling classloader {"+cl+"}.");
           // recycle classloader if needed
           ClassLoader parent = cl.getParent();
           ctx.removeAttribute(CLASS_LOADER, ScriptContext.ENGINE_SCOPE);
           cl = new URLClassLoader(new URL[]{classesDir.toURI().toURL()}, parent);
           ctx.setAttribute(CLASS_LOADER, cl, ScriptContext.ENGINE_SCOPE);
         }
+        logger.debug("Compiling script {"+scriptFile.getAbsolutePath()+"}.");
         // compile script
         compile(scriptFile, scriptsDir, classesDir, err, (List<File>) ctx.getAttribute(COMPILE_CLASSPATH, ScriptContext.ENGINE_SCOPE));
       }
@@ -92,6 +98,7 @@ public class JavaScriptEngine extends AbstractScriptEngine {
         // load compiled script class
         clazz = loadScriptClass(scriptFile, scriptsDir, cl);
       } catch (ClassNotFoundException ex) {
+        logger.debug("Compiling script {"+scriptFile.getAbsolutePath()+"}.");
         // looks like script is not compiled yet
         compile(scriptFile, scriptsDir, classesDir, err, (List<File>) ctx.getAttribute(COMPILE_CLASSPATH, ScriptContext.ENGINE_SCOPE));
         // try to load again, and if it fails, throw an exception

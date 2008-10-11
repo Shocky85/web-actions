@@ -249,7 +249,7 @@ public class JavaActionController extends AbstractActionController {
       try {
         logger.debug("Processing expression {" + expression + "} in context {" + _context.toString() + "}.");
         // Perform the evaluation
-        result = evaluator.process(expression, _context);
+        result = super.process(expression, _context);
         // ClassLoade could be chaged, so retain it
         classLoader = (ClassLoader)_context.getAttribute(JFSE_CLASS_LOADER, ScriptContext.ENGINE_SCOPE);
         logger.debug("Expression result is {" + result + "}.");

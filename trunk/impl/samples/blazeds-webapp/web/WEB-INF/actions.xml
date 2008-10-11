@@ -8,4 +8,18 @@
     <script>SayHello.java</script>
   </action>
 
+  <!--
+    Save xml document action
+  -->
+  <action name="save" script-engine-name="java-file">
+    <script>EXistAdapter.java</script>
+  </action>
+
+  <!--
+    Query documents action
+  -->
+  <action name="query" script-engine-name="java-file">
+    <script>EXistAdapter.java</script>
+  </action>
+
 </actions>
