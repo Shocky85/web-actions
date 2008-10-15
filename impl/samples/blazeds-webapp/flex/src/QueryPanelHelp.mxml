@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+  <mx:TextArea width="100%" height="100%" editable="false">
+    <mx:htmlText><![CDATA[<b>XQuery</b>
+load all contacts:
+    collection('contacts')
+    
+get document with it`s id:
+    for $i in collection('contacts')/contact return <contact><id>{util:document-id($i)}</id>{$i/*}</contact>
+
+<b>XUpdate</b>
+
+&lt;xu:modifications version="1.0" xmlns:xu="http://www.xmldb.org/xupdate"&gt;
+
+  &lt;!-- create a variable --&gt;
+  &lt;xu:variable name="company" select="//address[lname |= 'hyde']/company"/&gt;
+  
+  &lt;!-- append a set of new addresses --&gt;
+  &lt;xu:append select="/addressbook"&gt;
+    &lt;xu:element name="address"&gt;
+      &lt;fname&gt;George&lt;/fname&gt;
+      &lt;lname&gt;Spencer&lt;/lname&gt;
+      &lt;xu:value-of select="$company"/&gt;
+      &lt;city&gt;Darksdale&lt;/city&gt;
+    &lt;/xu:element&gt;
+    &lt;xu:element name="address"&gt;
+      &lt;fname&gt;Henry&lt;/fname&gt;
+      &lt;lname&gt;Useless&lt;/lname&gt;
+      &lt;company&gt;Useless Things&lt;/company&gt;
+      &lt;city&gt;Milwaukee&lt;/city&gt;
+    &lt;/xu:element&gt;
+  &lt;/xu:append&gt;
+  
+  &lt;!-- rename element fname to first-name --&gt;
+  &lt;xu:rename select="//address/fname"&gt;
+    first-name
+  &lt;/xu:rename&gt;
+  
+  &lt;!-- rename element lname to last-name --&gt;
+  &lt;xu:rename select="//address/lname"&gt;
+    last-name
+  &lt;/xu:rename&gt;
+  
+  &lt;!-- insert work phone after last-name --&gt;
+  &lt;xu:insert-after select="//address/last-name[. = 'spencer']"&gt;
+    &lt;email type="work"&gt;spencer@nulldevices.com&lt;/email&gt;
+    &lt;phone type="home"&gt;(0) 666 777&lt;/phone&gt;
+  &lt;/xu:insert-after&gt;
+
+  &lt;!-- add email before phone --&gt;
+  &lt;xu:insert-before select="//address[last-name |= 'useless']/city"&gt;
+    &lt;xu:element name="email"&gt;
+      &lt;xu:attribute name="type"&gt;home&lt;/xu:attribute&gt;
+      &lt;xu:text&gt;useless@home.com&lt;/xu:text&gt;
+    &lt;/xu:element&gt;
+  &lt;/xu:insert-before&gt;
+  
+  &lt;!-- remove an address --&gt;
+  &lt;xu:remove select="//address[city |= 'washing*']"/&gt;
+  
+  &lt;!-- update a node value --&gt;
+  &lt;xu:update select="//address[last-name |= 'useless']/first-name/text()"&gt;
+    Toby
+  &lt;/xu:update&gt;
+  
+  &lt;!-- update attribute --&gt;
+  &lt;xu:update select="//address[last-name |= 'jekyll']/email/@type"&gt;
+    home
+  &lt;/xu:update&gt;
+  
+&lt;/xu:modifications&gt;
+    
+    
+    ]]></mx:htmlText>
+  </mx:TextArea>
+</mx:Canvas>

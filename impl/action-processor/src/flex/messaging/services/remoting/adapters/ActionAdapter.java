@@ -21,13 +21,16 @@ import org.webactions.SentenceComparator;
 import org.webactions.AbstractActionController;
 import org.webactions.ServletJavaActionController;
 import org.actions.ActionEvaluator;
+import org.actions.ProcessingException;
 
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
+import javax.script.ScriptException;
 import java.security.AccessController;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * WebActions Adapter.
@@ -343,33 +346,23 @@ public class ActionAdapter extends ServiceAdapter {
       }
 
     } catch (Exception ex) {
-      // log the error
-      Log.getLogger(LOG_CATEGORY).warn("Method Invocation Exception.", ex);
-      /*
-      * If the invocation exception wraps a message exception, unwrap it and
-      * rethrow the nested message exception. Otherwise, build and throw a new
-      * message exception.
-      */
-      Throwable cause = ex.getCause();
-      if ((cause != null) && (cause instanceof MessageException)) {
-        throw (MessageException) cause;
-      } else if (cause != null) {
-        // Log a warning for this client's selector and continue
-        if (Log.isError()) {
-          Log.getLogger(LOG_CATEGORY).error("Error processing remote invocation: " +
-                  cause.toString() + StringUtils.NEWLINE +
-                  "  incomingMessage: " + message + StringUtils.NEWLINE +
-                  ExceptionUtil.toString(cause));
-        }
-        MessageException me = new MessageException(cause.getClass().getName() + " : " + cause.getMessage());
-        me.setCode("Server.Processing");
-        me.setRootCause(cause);
-        throw me;
-      } else {
-        MessageException me = new MessageException(ex.getMessage());
-        me.setCode("Server.Processing");
-        throw me;
+      // get real cause
+      Throwable cause = ex;
+      while ((cause instanceof InvocationTargetException
+          || cause instanceof ScriptException
+          || cause instanceof ProcessingException) && null!=cause.getCause()) {
+        cause = cause.getCause();
       }
+      // log the error
+     if (Log.isError()) {
+        Log.getLogger(LOG_CATEGORY).error("Error processing remote invocation: " +
+                cause.toString() + StringUtils.NEWLINE +
+                "  incomingMessage: " + message + StringUtils.NEWLINE +
+                ExceptionUtil.toString(cause));
+      }
+      MessageException me = new MessageException(cause);
+      me.setCode("Server.Processing");
+      throw me;
     }
 
     return result;

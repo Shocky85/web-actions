@@ -2,11 +2,12 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" viewSourceURL="srcview/index.html" xmlns:local="*">
 
   <mx:Panel title="Sample Application" width="100%" height="100%">
-    <mx:TabBar dataProvider="{stack1}"/>
+    <mx:TabBar dataProvider="{stack1}"/>    
   
     <mx:ViewStack id="stack1" width="100%" height="100%">
       <local:HelloActionPanel label="Hello Action"/>
-      <local:ContactManager label="Simple Contact Manager"/>      
+      <local:ContactManager label="Simple Contact Manager"/>
+      <local:QueryPanel label="Query Panel"/>      
     </mx:ViewStack>  
     
   </mx:Panel>
