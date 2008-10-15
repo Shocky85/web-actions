@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:local="*">
+  
+  <mx:Script>
+    <![CDATA[
+      import mx.controls.Alert;
+      import mx.rpc.events.*;
+            
+      /**
+       * Result handler
+       */
+      public function resultHandler(event:ResultEvent):void {
+        if (null!=event.result) {
+          var xml:XML = new XML("<xml>"+event.result+"</xml>");
+          queryResult.text = xml.normalize().children().toXMLString();
+        } else {
+          queryResult.text = null;
+        }
+      }
+
+      /**
+       * Action fault handler
+       */
+      public function actionFaultHandler(event:FaultEvent):void {
+        queryResult.text = event.fault.message;
+      }
+
+    ]]>
+  </mx:Script>
+
+  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/amf" destination="web-actions" showBusyCursor="true"
+    result="resultHandler(event)" fault="actionFaultHandler(event)" >    
+    <mx:method name="query"  />    
+    <mx:method name="save"/>
+    <mx:method name="update"/>    
+  </mx:RemoteObject>
+
+  <mx:HDividedBox width="100%" height="100%">
+    <mx:VDividedBox width="50%" height="100%">
+    
+      <mx:VBox width="100%" height="100%">        
+        <mx:TabBar dataProvider="{stack2}"/>  
+        <mx:ViewStack id="stack2" width="100%" height="100%">
+          <mx:Canvas label="XQuery">
+            <mx:VBox width="100%" height="100%">
+              <mx:TextArea width="100%" height="100%" id="xquery" text="collection('contacts')"/>          
+              <mx:Button label="Execute" click="{actionsRO.query(xquery.text)}"/>            
+            </mx:VBox>
+          </mx:Canvas>        
+          <mx:Canvas label="XUpdate">
+            <mx:VBox width="100%" height="100%">
+              <mx:TextArea width="100%" height="100%" id="xupdate" text=""/>          
+              <mx:Button label="Execute" click="{actionsRO.update(xupdate.text)}"/>            
+            </mx:VBox>
+          </mx:Canvas>        
+        </mx:ViewStack>
+      </mx:VBox>
+      
+      <mx:Panel title="Result" width="100%" height="100%">
+        <mx:TextArea width="100%" height="100%" id="queryResult"/>                         
+      </mx:Panel>
+    </mx:VDividedBox>
+    <mx:Panel title="Help" width="50%" height="100%">
+      <local:QueryPanelHelp/>            
+    </mx:Panel>    
+  </mx:HDividedBox>
+
+</mx:Canvas>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+  creationComplete="loadContacts()" >
+  
+  <mx:Script>
+    <![CDATA[
+      import mx.controls.Alert;
+      import mx.rpc.events.*;
+      
+      /**
+      * Load contacts
+      */
+      public function loadContacts():void {
+        disableContactForm();        
+        actionsRO.query("<contacts>{collection('contacts')}</contacts>");
+      }
+      
+      /**
+      * Clear context XML and disable contact form
+      */
+      public function disableContactForm():void {
+        contact = new XML(contactBlueprint);
+        contactForm.enabled = false;      
+      }        
+      
+      /**
+       * Query reslt handler
+       */
+      public function queryResultHandler(event:ResultEvent):void {
+        if (null!=event.result) {          
+          contactsGrid.dataProvider = new XML(event.result).children();          
+        }
+      }
+
+      /**
+       * Action fault handler
+       */
+      public function actionFaultHandler(event:FaultEvent):void {
+        Alert.show("Fault: "+ event.toString());
+      }
+
+    ]]>
+  </mx:Script>
+
+  <!-- Contact blueprint -->
+  <mx:XML id="contactBlueprint" format="e4x">
+    <contact>
+      <first_name/>
+      <last_name/>
+      <email/>
+    </contact>
+  </mx:XML>
+
+  <mx:XML id="contact" format="e4x">
+    <contact>
+      <first_name/>
+      <last_name/>
+      <email/>
+    </contact>
+  </mx:XML>
+  
+  <!-- udate contact -->
+  <mx:XML id="updateContact" format="e4x" xmlns="">
+    <xu:modifications version="1.0" xmlns:xu="http://www.xmldb.org/xupdate">    
+      <xu:update select="collection('contacts')/contact/first_name/text()">{contact.first_name}</xu:update>
+      <xu:update select="collection('contacts')/contact/last_name/text()">{contact.last_name}</xu:update>
+      <xu:update select="collection('contacts')/contact/email_name/text()">{contact.email_name}</xu:update>
+    </xu:modifications>    
+  </mx:XML>
+
+  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/amf" destination="web-actions"
+    fault="actionFaultHandler(event)" showBusyCursor="true">    
+    <mx:method name="query" result="queryResultHandler(event)" />    
+    <mx:method name="save"/>
+    <mx:method name="update"/>    
+  </mx:RemoteObject>
+
+    <mx:VBox width="100%" height="100%">
+
+      <mx:HBox paddingTop="5" paddingLeft="5" paddingBottom="5" paddingRight="5">    
+        <mx:Button label="ReFresh List" click="loadContacts()"/>
+        <mx:Button label="New" click="{contactForm.enabled=true}"/>
+        <mx:Button label="Edit" click="{contact = new XML(contactsGrid.selectedItem);contactForm.enabled=true}"/>
+        <mx:Button label="Delete"/>
+      </mx:HBox>
+            
+      <mx:DataGrid id="contactsGrid" width="100%" height="100%">
+        <mx:columns>
+          <mx:DataGridColumn headerText="First Name" dataField="first_name"/>
+          <mx:DataGridColumn headerText="Last Name" dataField="last_name"/>
+          <mx:DataGridColumn headerText="E-Mail" dataField="email"/>
+        </mx:columns>
+      </mx:DataGrid>
+
+      <mx:Form width="100%" id="contactForm" enabled="false">
+        <mx:FormItem label="First Name" width="100%">
+          <mx:TextInput id="first_name" width="100%" text="{contact.first_name}" change="{contact.first_name = first_name.text}"/>
+        </mx:FormItem>
+        <mx:FormItem label="Last Name" width="100%">
+          <mx:TextInput id="last_name" width="100%" text="{contact.last_name}" change="{contact.last_name = last_name.text}"/>
+        </mx:FormItem>
+        <mx:FormItem label="E-Mail" width="100%">
+          <mx:TextInput id="email" width="100%" text="{contact.email}" change="{contact.email = email.text}"/>
+        </mx:FormItem>
+        <mx:FormItem>
+          <mx:Button label="Save" id="saveBtn" click="{actionsRO.save('/contacts/contact',null,contact.toXMLString()); loadContacts()}"/>
+        </mx:FormItem>
+        <mx:FormItem>
+          <mx:Button label="Cancel" id="cancelBtn" click="disableContactForm()"/>
+        </mx:FormItem>
+       </mx:Form>
+
+    </mx:VBox>
+
+</mx:Canvas>

@@ -9,16 +9,23 @@
   </action>
 
   <!--
-    Save xml document action
+    Save xml document
   -->
   <action name="save" script-engine-name="java-file">
     <script>EXistAdapter.java</script>
   </action>
 
   <!--
-    Query documents action
+    Execute XQuery
   -->
   <action name="query" script-engine-name="java-file">
+    <script>EXistAdapter.java</script>
+  </action>
+
+  <!--
+    Execute XUpdate
+  -->
+  <action name="update" script-engine-name="java-file">
     <script>EXistAdapter.java</script>
   </action>
 

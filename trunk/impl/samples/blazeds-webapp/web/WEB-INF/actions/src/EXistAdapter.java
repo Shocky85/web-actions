@@ -67,21 +67,24 @@ public class EXistAdapter {
         if (params.size()==1) {
           return query(String.valueOf(params.get(0)));
         } else {
-          logger.error("Invalid number of arguments, expecting 1, when got {"+params.size()+"}.");
+          logger.error("Invalid number of arguments, expecting 1, when have got {"+params.size()+"}.");
         }
       } else if ("save".equals(operation)) {
         // get parameters
         if (params.size()==3) {
-          save(String.valueOf(params.get(0)), String.valueOf(params.get(1)), String.valueOf(params.get(2)));
+          String path = String.valueOf(params.get(0));
+          String documentId = null!=params.get(1) ?String.valueOf(params.get(1)) :null;
+          String xml = String.valueOf(params.get(2));
+          save(path, documentId, xml);
         } else {
-          logger.error("Invalid number of arguments, expecting 3, when got {"+params.size()+"}.");
+          logger.error("Invalid number of arguments, expecting 3, when have got {"+params.size()+"}.");
         }
       } else if ("update".equals(operation)) {
         // get parameters
-        if (params.size()==2) {
-          update(String.valueOf(params.get(0)), String.valueOf(params.get(1)));
+        if (params.size()==1) {          
+          update(String.valueOf(params.get(0)));
         } else {
-          logger.error("Invalid number of arguments, expecting 3, when got {"+params.size()+"}.");
+          logger.error("Invalid number of arguments, expecting 2, when have got {"+params.size()+"}.");
         }
       } else {
         logger.error("Unknown operation {"+operation+"}.");
@@ -202,23 +205,18 @@ public class EXistAdapter {
   /**
    * Execute XUpdate command
    *
-   * @param path collection path
    * @param xupdate update command
    */
-  public static void update(String path, String xupdate) throws Exception {
+  public static void update(String xupdate) throws Exception {
     Collection col = null;
     try {
       // mark start time
       long start = System.currentTimeMillis();
-      // sanity check
-      if (null==path) throw new Exception("Document path must not be null.");
-      // strip leading `/`
-      if (path.startsWith("/")) path = path.substring(1, path.length());
       // get collection
-      col = getCollection(path);
-      // in collection is not found, create it
+      col = getCollection(null);
+      // in collection is not found, throw an exception
       if (null==col) {
-        throw new Exception("Path {"+path+"} is not valid.");
+        throw new Exception("No documents have been found.");
       }
       // get XUpdate service
       XUpdateQueryService service = (XUpdateQueryService) col.getService("XUpdateQueryService", "1.0");      
