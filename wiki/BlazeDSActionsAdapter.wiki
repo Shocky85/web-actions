@@ -1,0 +1,12 @@
+#summary BlazeDS Web-Actions adapter.
+
+= Introduction =
+
+This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] for BlazeDS.
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
