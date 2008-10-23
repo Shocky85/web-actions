@@ -1,12 +1,36 @@
-#summary BlazeDS Web-Actions adapter.
+#summary BlazeDS Web Actions adapter.
 
 = Introduction =
 
-This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] for BlazeDS.
+This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] with BlazeDS.
 
-= Details =
+= Summary =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+As you may know, Web Actions framework allow to use any JSR-223 complaint scripting engine for server-side scripting. And in this example we will use bundled Java engine to proxy FLEX requests to embedded [exist.sourceforge.net eXist] XML database.
+
+=== BlazeDS configuration ===
+Let's configure a default remoting service with id `web-actions` by specifying service class `flex.messaging.services.remoting.adapters.ActionAdapter`.
+`ActionAdapter` will read it's configuration from a file specified in `actions-config`.
+And since we are going to use Java engine we need to specify source, classes and lib directories for a Java compiler. Complete configuration will be:
+{{{
+  <services>
+    <service id="remoting-service" class="flex.messaging.services.RemotingService">
+      <adapters>
+        <adapter-definition id="web-actions" class="flex.messaging.services.remoting.adapters.ActionAdapter" default="true">
+          <properties>
+            <actions-config>WEB-INF/actions.xml</actions-config>
+            <actions-source-dir>WEB-INF/actions/src</actions-source-dir>
+            <actions-classes-dir>WEB-INF/actions/classes</actions-classes-dir>
+            <actions-compile-lib-dir>WEB-INF/actions/lib</actions-compile-lib-dir>
+          </properties>
+        </adapter-definition>
+      </adapters>
+      <!-- WebActions destination -->
+      <destination id="web-actions">
+      </destination>
+      <default-channels>
+        <channel ref="amf"/>
+      </default-channels>
+    </service>
+  </services>
+}}}
