@@ -11,7 +11,9 @@ As you may know, Web Actions framework allow to use any JSR-223 complaint script
 === BlazeDS configuration ===
 Let's configure a default remoting service with id `web-actions` by specifying service class `flex.messaging.services.remoting.adapters.ActionAdapter`.
 `ActionAdapter` will read it's configuration from a file specified in `actions-config`.
-And since we are going to use Java engine we need to specify source, classes and lib directories for a Java compiler. Complete configuration will be:
+And since we are going to use Java engine we need to specify source, classes and lib directories for a Java compiler.
+
+Completed configuration will look like:
 {{{
   <services>
     <service id="remoting-service" class="flex.messaging.services.RemotingService">
