@@ -62,6 +62,7 @@
   </servlet-mapping>
 
   <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
     <welcome-file>main.html</welcome-file>
     <welcome-file>index.jspx</welcome-file>
   </welcome-file-list>

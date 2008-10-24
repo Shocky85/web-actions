@@ -116,6 +116,7 @@ public class ActionEvaluator {
     try {
       // get the scripting engine for an action
       ScriptEngine sEngine = getScriptEngineForAction(action);
+      if (null==sEngine) throw new ProcessingException("No script engine for action {"+action+"} has been found.");
       // Evaluate action in given context
       return sEngine.eval(action.getAction(), scriptContext);
     } catch (Exception ex) {

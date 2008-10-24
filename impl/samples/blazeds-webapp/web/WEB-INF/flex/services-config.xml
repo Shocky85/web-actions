@@ -24,7 +24,7 @@
 
   <channels>
     <channel-definition id="amf" class="mx.messaging.channels.AMFChannel">
-      <endpoint url="http://localhost:8080/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+      <endpoint url="http://localhost:8080/samples-blazeds/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
     </channel-definition>
   </channels>
 

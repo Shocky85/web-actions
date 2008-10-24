@@ -28,7 +28,7 @@
     ]]>
   </mx:Script>
 
-  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/amf" destination="web-actions" showBusyCursor="true"
+  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/samples-blazeds/amf" destination="web-actions" showBusyCursor="true"
     result="resultHandler(event)" fault="actionFaultHandler(event)" >    
     <mx:method name="query"  />    
     <mx:method name="save"/>
