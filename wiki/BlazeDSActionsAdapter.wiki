@@ -5,13 +5,13 @@
 
 This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] with BlazeDS.
 
-In this sample we are not covering web application setup or FLEX programming, but only topic of integration of ActionAdapter into BlazeDS.
+_We are not covering web application setup or FLEX programming, but only topic of integrating ActionAdapter into BlazeDS._
 
 = Summary =
 
 As you may already know, Web Actions allow to use any JSR-223 complaint scripting engine for server-side scripting. And in this example we will use bundled Java engine to proxy FLEX requests to embedded [exist.sourceforge.net eXist] XML database.
 
-You can download the complete webapp here.
+You can download the complete webapp here [http://web-actions.googlecode.com/files/samples-blazeds.war]. Just drop it into your servlet container and it will deploy to /blazeds-webapp url.
 
 === BlazeDS configuration ===
 Let's configure a default remoting service with id `web-actions` by specifying service class `flex.messaging.services.remoting.adapters.ActionAdapter`.
