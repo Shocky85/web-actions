@@ -9,7 +9,7 @@ _We are not covering web application setup or FLEX programming, but only topic o
 
 = Summary =
 
-As you may already know, Web Actions allow to use any JSR-223 complaint scripting engine for server-side scripting. And in this example we will use bundled Java engine to proxy FLEX requests to embedded [exist.sourceforge.net eXist] XML database.
+As you may already know, Web Actions allow to use any JSR-223 complaint scripting engine for server-side scripting. And in this example we will use bundled Java engine to proxy FLEX requests to embedded [eXist exist.sourceforge.net] XML database.
 
 You can download the complete webapp here [http://web-actions.googlecode.com/files/samples-blazeds.war]. Just drop it into your servlet container and it will deploy to /blazeds-webapp url.
 
