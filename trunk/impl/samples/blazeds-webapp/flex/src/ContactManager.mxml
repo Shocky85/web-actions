@@ -68,7 +68,7 @@
     </xu:modifications>    
   </mx:XML>
 
-  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/amf" destination="web-actions"
+  <mx:RemoteObject id="actionsRO" endpoint="http://localhost:8080/samples-blazeds/amf" destination="web-actions"
     fault="actionFaultHandler(event)" showBusyCursor="true">    
     <mx:method name="query" result="queryResultHandler(event)" />    
     <mx:method name="save"/>

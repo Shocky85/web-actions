@@ -27,6 +27,7 @@
     <fileset refid="library.servlet-api"/>
     <fileset refid="library.portlet-api"/>
     <fileset refid="library.junit"/>
+    <fileset refid="library.flex-messaging"/>
   </path>
   
   

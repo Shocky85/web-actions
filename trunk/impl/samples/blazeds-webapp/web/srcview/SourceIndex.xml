@@ -5,7 +5,9 @@
 		<node label="src" icon="classpathIcon" expanded="true">
 			<node label="ContactManager.mxml" icon="mxmlIcon" url="source/ContactManager.mxml.html"/>
 			<node label="HelloActionPanel.mxml" icon="mxmlIcon" url="source/HelloActionPanel.mxml.html"/>
-			<node selected="true" label="main.mxml" icon="mxmlAppIcon" url="source/main.mxml.html"/>
+			<node selected="true" label="index.mxml" icon="mxmlAppIcon" url="source/index.mxml.html"/>
+			<node label="QueryPanel.mxml" icon="mxmlIcon" url="source/QueryPanel.mxml.html"/>
+			<node label="QueryPanelHelp.mxml" icon="mxmlIcon" url="source/QueryPanelHelp.mxml.html"/>
 		</node>
 	</nodes>
 </index>

@@ -24,7 +24,7 @@
   </mx:Script>
 
   <mx:RemoteObject id="actionsRO" 
-    endpoint="http://localhost:8080/amf" 
+    endpoint="http://localhost:8080/samples-blazeds/amf" 
     destination="web-actions" 
     result="actionResultHandler(event)"
     fault="actionFaultHandler(event)"/>
