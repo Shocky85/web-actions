@@ -1,8 +1,11 @@
 #summary BlazeDS Web Actions adapter.
+#labels Phase-Support
 
 = Introduction =
 
 This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] with BlazeDS.
+
+In this sample we are not covering web application setup or FLEX programming, but only topic of integration of ActionAdapter into BlazeDS.
 
 = Summary =
 
