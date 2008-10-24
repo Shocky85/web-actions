@@ -5,7 +5,7 @@
 
 This sample demonstrate how to configure and use the [http://code.google.com/p/web-actions/source/browse/trunk/impl/action-processor/src/flex/messaging/services/remoting/adapters/ActionAdapter.java `ActionAdapter`] with BlazeDS.
 
-_We are not covering web application setup or FLEX programming, but only topic of integrating ActionAdapter into BlazeDS._
+_We are not covering web application setup or FLEX programming, but only topic of integrating `ActionAdapter` into BlazeDS._
 
 = Summary =
 
