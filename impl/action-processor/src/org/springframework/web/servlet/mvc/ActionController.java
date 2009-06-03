@@ -4,17 +4,18 @@ import org.actions.ActionEvaluator;
 import org.springframework.web.servlet.ModelAndView;
 import org.webactions.Sentence;
 import org.webactions.SentenceParser;
-import org.webactions.ServletJavaActionController;
 
 import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Controller parse request parameters and invoke ActionEvaluator 
+ * Controller parse request parameters and delegate action processing to underlaying servlet action controller 
  *
  * @author Ivan Latysh
  * @version 0.1
@@ -22,14 +23,17 @@ import java.util.TreeMap;
  */
 public class ActionController extends org.springframework.web.servlet.mvc.AbstractController {
 
-  /** Action controller */
-  private final ServletJavaActionController actionController = new ServletJavaActionController();
-
   /** Same view name */
   public static final String SAME_VIEW = ":this";
 
+  /** Action evaluator */
+  protected ActionEvaluator evaluator;
+
   /** Default view name */
   protected String defaultView = "index.xhtml";
+
+  /** Script context parameters */
+  protected Map<String, Object> scriptContextParameters;
 
   /**
    * Return default view name
@@ -48,6 +52,24 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
   }
 
   /**
+   * Return action evaluator
+   *
+   * @return action evaluator
+   */
+  public ActionEvaluator getEvaluator() {
+    return evaluator;
+  }
+
+  /**
+   * Set action evluator
+   *
+   * @param evaluator action evaluator
+   */
+  public void setEvaluator(ActionEvaluator evaluator) {
+    this.evaluator = evaluator;
+  }
+
+  /**
    * Method that perform an actual work
    *
    * @param httpServletRequest request
@@ -59,9 +81,9 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     // parse sentences
     TreeMap<Sentence, Sentence> sentences = parseSentences(httpServletRequest);
     // get ScriptContext
-    ScriptContext context = actionController.getScriptContext(httpServletRequest, httpServletResponse);
+    ScriptContext context = getScriptContext(httpServletRequest, httpServletResponse);
     // process actions
-    Object result = actionController.process(sentences, context);
+    Object result = process(sentences, context);
 
     // log some debug info
     if (logger.isDebugEnabled()){
@@ -73,8 +95,7 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
 
     // return requested view when result is null
     if (null==result) {
-      modelAndView = getRequestedView(httpServletRequest);
-      return modelAndView;
+      return new ModelAndView(getRequestedViewName(httpServletRequest));
     }
 
     // check the result
@@ -87,7 +108,7 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
       }
     } else if (result instanceof Map) {
       // user returned map to create a new Model and View
-      modelAndView = new ModelAndView(httpServletRequest.getRequestURI(), (Map)result);
+      modelAndView = new ModelAndView(getRequestedViewName(httpServletRequest), (Map)result);
     } else {
       // create a new Model and View from returned object
       Map<String, Object> model = new HashMap<String, Object>(1);
@@ -100,12 +121,12 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
   }
 
   /**
-   * Return ModelAndView from requested resource.
+   * Return requested view name
    *
    * @param httpServletRequest request
-   * @return ModelAndView from requested resource
+   * @return view name
    */
-  protected ModelAndView getRequestedView(HttpServletRequest httpServletRequest) {
+  protected String getRequestedViewName(HttpServletRequest httpServletRequest) {
     // get requester URI
     String requestURI = httpServletRequest.getRequestURI();
     // remove leading slash
@@ -115,8 +136,8 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
       if (logger.isDebugEnabled()) logger.debug("Mapping request {"+requestURI+"} to {"+(requestURI + defaultView)+"}");
       requestURI += defaultView;
     }
-    // return model and view
-    return new ModelAndView(requestURI);
+    // return view name
+    return requestURI;
   }
 
   /**
@@ -130,23 +151,58 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
     return SentenceParser.parseSentence((Map<String, String[]>)httpServletRequest.getParameterMap());
   }
 
-
   /**
-   * Return action evaluator
+   * Process action in the request if any
    *
-   * @return action evaluator
+   * @param sentences parsed sentences
+   * @param context context
+   * @return action result
    */
-  public ActionEvaluator getEvaluator() {
-    return actionController.getEvaluator();
-  }
-
-  /**
-   * Set action evluator
-   *
-   * @param evaluator action evaluator
-   */
-  public void setEvaluator(ActionEvaluator evaluator) {
-    actionController.setEvaluator(evaluator);
+  public Object process(TreeMap<Sentence, Sentence> sentences, ScriptContext context) {
+    // make sure that action evaluator is set
+    if (null==evaluator) throw new IllegalStateException("ActionEvaluator is not set.");
+    Object result = null;
+    // Process sentence map
+    // While there are sentences to process
+    while (null!=sentences && sentences.size()>0) {
+      // action scope context
+      SimpleScriptContext _context = new SimpleScriptContext();
+      // copy original context parameters
+      _context.setBindings(context.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+      _context.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
+      // Iterate over sentences
+      final Iterator sentencesMapIterator = sentences.values().iterator();
+      // Get first sentence
+      final Sentence firstSentence = (Sentence) sentencesMapIterator.next();
+      // Get expression of the first sentence
+      final String expression = firstSentence.getExpression();
+      // Remove first sentence from the map
+      sentencesMapIterator.remove();
+      // If suffix is null, use "values" as values parameter name
+      final String paramName = firstSentence.getSuffix() == null ? "values" : firstSentence.getSuffix();
+      // Put sentence values into the evaluation context
+      _context.setAttribute(paramName, firstSentence.getValue(), ScriptContext.ENGINE_SCOPE);
+      // Search for other sentences of the same expression
+      while (sentencesMapIterator.hasNext()) {
+        final Sentence followingSentence = (Sentence) sentencesMapIterator.next();
+        if (expression.equals(followingSentence.getExpression())) {
+          _context.setAttribute(followingSentence.getSuffix(), followingSentence.getValue(), ScriptContext.ENGINE_SCOPE);
+          // Remove sentence from the map
+          sentencesMapIterator.remove();
+        }
+      }
+      // Evaluate expression
+      try {
+        logger.debug("Processing expression {" + expression + "} in context {" + _context.toString() + "}.");
+        // Perform the evaluation
+        result = evaluator.process(expression, _context);
+        logger.debug("Expression result is {" + result + "}.");
+      } catch (Exception ex) {
+        logger.error("[WAC00002] Error processing expression {" + expression + "} in context {" + _context.toString() + "}.", ex);
+      }
+    }
+    // Return evaluation result
+    return result;
   }
 
   /**
@@ -154,8 +210,8 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
    *
    * @return script context parameters
    */
-  public Map<String, Object> getScriptContextParameters() {
-    return actionController.getScriptContextParameters();
+  public final Map<String, Object> getScriptContextParameters() {
+    return scriptContextParameters;
   }
 
   /**
@@ -164,19 +220,34 @@ public class ActionController extends org.springframework.web.servlet.mvc.Abstra
    * @param scriptContextParameters parameters
    */
   public void setScriptContextParameters(Map<String, Object> scriptContextParameters) {
-    actionController.setScriptContextParameters(scriptContextParameters);
+    // copy all given parameters
+    scriptContextParameters.clear();
+    scriptContextParameters.putAll(scriptContextParameters);
   }
 
   /**
-   * Return script context parameters
+   * Return script context
    *
+   * @param request Http Servlet Request
+   * @param response Http Servlet Response
    * @return script context parameters
    */
   public ScriptContext getScriptContext(HttpServletRequest request, HttpServletResponse response) {
-    return actionController.getScriptContext(request, response);
+    // create the new context
+    SimpleScriptContext context = new SimpleScriptContext();
+    // append script context parameters
+    if (null!=scriptContextParameters) {
+      for (Map.Entry<String, Object> entry : scriptContextParameters.entrySet()) {
+        context.setAttribute(entry.getKey(), entry.getValue(), ScriptContext.ENGINE_SCOPE);
+      }
+    }
+
+    // add some environmental parameters
+    context.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
+    context.setAttribute("response", response, ScriptContext.ENGINE_SCOPE);
+
+    // return context
+    return context;
   }
 
-  public Object processActions(TreeMap<Sentence, Sentence> sentences, ScriptContext context) {
-    return actionController.process(sentences, context);
-  }
 }

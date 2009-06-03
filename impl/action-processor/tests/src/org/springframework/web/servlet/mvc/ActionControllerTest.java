@@ -91,7 +91,7 @@ public class ActionControllerTest extends TestCase {
     assertNotNull(context);
     TreeMap<Sentence, Sentence> sentences = controller.parseSentences(request);
     assertNotNull(sentences);
-    Object result = controller.processActions(sentences, context);
+    Object result = controller.process(sentences, context);
     assertNull(result);
   }
 

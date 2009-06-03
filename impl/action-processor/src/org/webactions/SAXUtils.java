@@ -1,4 +1,4 @@
-package org.springframework.web.servlet;
+package org.webactions;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -19,7 +19,7 @@ import java.io.IOException;
  * @version 0.1
  * @since 30-Jan-2008 3:11:10 PM
  */
-public class WebactionsUtils {
+public class SAXUtils {
 
   /**
    * Return HttpRequest XML source
