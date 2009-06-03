@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="web-actions-samples" default="dist">
+
+  <property file="build.properties"/>
+  <property name="dist.dir" value="${basedir}/${dist.dir.name}"/>
+
+  <property name="out.dir.production" value="${basedir}/out/production"/>
+  <property name="out.dir.exploded" value="${basedir}/out/exploded"/>
+  <property name="out.dir.tests" value="${basedir}/out/tests"/>
+
+  <!-- Compiler options -->
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+    <exclude name="**/.sbas/**"/>
+    <exclude name="**/.IJI.*/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.betwixt"/>
+    <include name="**/?*.ScriptEngineFactory"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+
+  <!-- Project Libraries -->
+  <fileset id="library.junit" dir="${basedir}/lib">
+    <include name="junit-3.8.1.jar"/>
+  </fileset>
+
+  <fileset id="library.log4j" dir="${basedir}/lib">
+    <include name="log4j-1.2.15.jar"/>
+  </fileset>
+
+  <fileset id="library.springframework.core" dir="${basedir}/lib/Spring-3.0.0">
+    <include name="org.springframework.core-3.0.0.M1.jar"/>
+    <include name="org.springframework.beans-3.0.0.M1.jar"/>
+  </fileset>
+
+  <fileset id="library.springframework.web" dir="${basedir}/lib/Spring-3.0.0">
+    <include name="org.springframework.web-3.0.0.M1.jar"/>
+    <include name="org.springframework.web.servlet-3.0.0.M1.jar"/>
+  </fileset>
+
+  <fileset id="library.servlet-api" dir="${basedir}/lib">
+    <include name="servlet-api.jar"/>
+    <include name="servlet.jar"/>
+  </fileset>
+
+  <!-- Modules -->
+  
+  <import file="${basedir}/hello-world-webapp/module_hello-world-webapp.xml"/>
+
+  <!--
+    Create project distributive
+  -->
+  <target name="dist"
+          depends="clean, dist.module.hello-world"
+          description="Build the project">
+
+    <!-- create dist dir -->
+    <mkdir dir="${dist.dir}"/>
+    <!-- copy files -->
+    <copy todir="${dist.dir}">
+      <!-- hello world -->
+      <fileset dir="${module.hello-world.basedir}">
+        <include name="${module.hello-world.war.filename}"/>        
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean"
+          depends="clean.module.hello-world"
+          description="Clean project files">
+    <delete dir="${dist.dir}" failonerror="false"/>
+    <delete dir="${out.dir.production}" failonerror="false"/>
+    <delete dir="${out.dir.tests}" failonerror="false"/>
+  </target>
+
+</project>
