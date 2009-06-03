@@ -27,7 +27,7 @@ public class JavaScriptEngine extends AbstractScriptEngine {
   protected static final String CLASS_LOADER = "JFSE_CLASS_LOADER";
 
   /** Error output */
-  protected final PrintWriter err = new PrintWriter(System.err);
+  protected final PrintWriter err = new PrintWriter(System.out);
 
   // my factory, may be null
   private ScriptEngineFactory factory;
@@ -78,7 +78,8 @@ public class JavaScriptEngine extends AbstractScriptEngine {
       // get script class file
       String scriptClassFileName = scriptClass+".class";
       String relativePath = scriptsDir.toURI().relativize(scriptFile.getParentFile().toURI()).toString();
-      File scriptClassFile = new File(classesDir, (!relativePath.endsWith("/") ?relativePath+"/" :relativePath) +scriptClassFileName);
+      // File scriptClassFile = new File(classesDir, (!relativePath.endsWith("/") ?relativePath+"/" :relativePath) +scriptClassFileName);
+      File scriptClassFile = new File(classesDir, scriptClassFileName);
       // check if script has been modified
       if (!scriptClassFile.exists() || scriptClassFile.exists() && scriptClassFile.lastModified() < scriptFile.lastModified()) {
         logger.debug("{"+scriptClassFile.getAbsolutePath()+"} "+(scriptClassFile.exists() ?"is outdated." :"does not exist."));
