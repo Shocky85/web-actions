@@ -58,6 +58,7 @@
       <fileset dir="${module.jsr223-java-script-engine.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
+        <include name="**/*.ScriptEngineFactory"/>
       </fileset>
     </copy>
   </target>
