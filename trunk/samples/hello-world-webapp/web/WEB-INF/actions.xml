@@ -16,9 +16,4 @@
       </script>
     </action>
 
-    <!-- Java action -->
-    <action name="sayJavaHello" script-engine-name="java-file">
-      <script>SayHello.java</script>
-    </action>
-
   </actions>
