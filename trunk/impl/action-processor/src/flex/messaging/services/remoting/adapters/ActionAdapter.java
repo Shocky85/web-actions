@@ -16,21 +16,15 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.util.ExceptionUtil;
 import flex.messaging.util.MethodMatcher;
 import flex.messaging.util.StringUtils;
-import org.webactions.Sentence;
-import org.webactions.SentenceComparator;
-import org.webactions.AbstractActionController;
-import org.webactions.ServletJavaActionController;
-import org.actions.ActionEvaluator;
 import org.actions.ProcessingException;
+import org.webactions.ServletActionController;
 
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 import javax.script.ScriptException;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.util.*;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * WebActions Adapter.
@@ -67,7 +61,7 @@ public class ActionAdapter extends ServiceAdapter {
   /** Map of include methods */
   protected Map<String, RemotingMethod> includedMethods;
   /** Action controller */
-  protected final ServletJavaActionController actionController = new ServletJavaActionController();
+  protected final ServletActionController actionController = new ServletActionController();
   /** Applicatio home dir */
   protected File appHome;
 
@@ -256,14 +250,15 @@ public class ActionAdapter extends ServiceAdapter {
           // set application home
           actionController.setApplicationHome(appHome);
           // get actions-source-dir
-          actionController.setActionSourceDir(new File(appHome, properties.getPropertyAsString("actions-source-dir", "/WEB-INF/actions/src")));
+          // @todo refactor it
+//          actionController.setActionSourceDir(new File(appHome, properties.getPropertyAsString("actions-source-dir", "/WEB-INF/actions/src")));
           // get actions-classes-dir
-          actionController.setActionClassesDir(new File(appHome, properties.getPropertyAsString("actions-classes-dir", "WEB-INF/actions/classes")));
+//          actionController.setActionClassesDir(new File(appHome, properties.getPropertyAsString("actions-classes-dir", "WEB-INF/actions/classes")));
           // get actions-compile-lib-dir
-          actionController.setActionLibsDir(new File(appHome, properties.getPropertyAsString("actions-compile-lib-dir", "WEB-INF/actions/lib")));
+//          actionController.setActionLibsDir(new File(appHome, properties.getPropertyAsString("actions-compile-lib-dir", "WEB-INF/actions/lib")));
           // set configuration file
           actionConfig = new File(appHome, _actionsConfig);
-          actionController.setActionConfig(actionConfig);
+          actionController.getEvaluator().configure(actionConfig);
         } catch (Exception e) {
           Log.getLogger(LogCategories.CONFIGURATION).fatal("Unable to configure action controller from file {"+(null!=actionConfig ?actionConfig.getAbsolutePath() :null)+"}.", e);
           throw new RuntimeException("Error configuring action controller from file {"+(null!=actionConfig ?actionConfig.getAbsolutePath() :null)+"}.", e);

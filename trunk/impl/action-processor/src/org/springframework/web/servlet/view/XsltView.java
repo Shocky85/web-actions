@@ -1,23 +1,26 @@
 package org.springframework.web.servlet.view;
 
-import org.xml.sax.*;
-import org.wm.xml.transform.AbstractXMLReader;
-import org.springframework.web.servlet.WebactionsUtils;
 import org.springframework.util.StringUtils;
+import org.wm.xml.transform.AbstractXMLReader;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.webactions.SAXUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.sax.SAXSource;
-import java.util.Map;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * XSLT based view
@@ -140,7 +143,7 @@ public class XsltView extends InternalResourceView {
         final Attributes na = AbstractXMLReader.noAttributes;
         contentHandler.startDocument();
         // contruct Http Servlet Request source
-        WebactionsUtils.toHttpRequestSAX(contentHandler, request);
+        SAXUtils.toHttpRequestSAX(contentHandler, request);
         contentHandler.endDocument();
       }
     }, new InputSource());
