@@ -56,4 +56,4 @@ Configured valve will create the authentication header from the passed token.
 
 Also valve solve the issue with inability to intercept bad logins. Browser will not prompt user for login and password on failed login attempt, and you will be able to handle it in your app.
 
-Everyone is welcome to the user mailing list to discuss this.
+Everyone is welcome to the [http://groups.google.com/group/web-actions-user user forum] to discuss this.
