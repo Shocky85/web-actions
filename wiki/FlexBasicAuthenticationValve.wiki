@@ -14,6 +14,9 @@ The idea of a fix is to pass basic authentication tokens to the server as a para
 
 Step 1 - Download Tomcat valve and put it into Tomcat libs folder.
 
+   [http://web-actions.googlecode.com/files/flex-basic-authenticator-valve.jar]
+
+
 Step 2 - Configure webapp context (META-INF/context.xml):
 {{{
 <?xml version="1.0" encoding="UTF-8"?>
